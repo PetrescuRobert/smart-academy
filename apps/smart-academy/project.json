@@ -18,6 +18,34 @@
         }
       }
     },
+    "db:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "drizzle-kit generate --config=drizzle.config.ts",
+        "cwd": "apps/smart-academy"
+      }
+    },
+    "db:push": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "drizzle-kit push --config=drizzle.config.ts",
+        "cwd": "apps/smart-academy"
+      }
+    },
+    "db:migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "drizzle-kit migrate --config=drizzle.config.ts",
+        "cwd": "apps/smart-academy"
+      }
+    },
+    "db:studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "drizzle-kit studio --config=drizzle.config.ts",
+        "cwd": "apps/smart-academy"
+      }
+    },
     "prune-lockfile": {
       "dependsOn": ["build"],
       "cache": true,

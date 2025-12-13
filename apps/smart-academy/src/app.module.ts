@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
 import { CourseModule } from './course/course.module';
+import { ConfigModule } from '@nestjs/config';
+import { DrizzleModule } from './drizzle/drizzle.module';
 
 @Module({
-  imports: [CourseModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    CourseModule,
+    DrizzleModule.forRootAsync(),
+  ],
   controllers: [],
   providers: [],
 })
