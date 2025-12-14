@@ -7,7 +7,7 @@ export class GetCourseService {
   async execute(courseId: string): Promise<Course> {
     // TODO: check if courseId is a valid UUID
     try {
-      const course = this.courseRepository.getCourseById(courseId);
+      const course = await this.courseRepository.getCourseById(courseId);
       return course;
     } catch (e) {
       console.log(e);

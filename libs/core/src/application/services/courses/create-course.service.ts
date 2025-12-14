@@ -11,24 +11,25 @@ export class CreateCourseService {
   ) {}
 
   async execute(command: CreateCourseCommand): Promise<string> {
-    // Prepare Data (Generate ID)
-    const idString = this.idGenerator.generate();
-    const courseId = new CourseId(idString);
-
     // Delegate to Domain (Create the Entity)
-    const course = Course.create(courseId, command.name, command.description);
+    const course = Course.createNew(command.name, command.description);
 
     // Delegate to Infrastructure (Save)
+    let savedId: CourseId;
     try {
-      await this.courseRepository.save(course);
+      savedId = await this.courseRepository.save(course);
     } catch (e) {
       console.log(e);
       throw new Error(
-        `Unable to save the course with ID:${courseId.value} to the database, please try again later`
+        'Unable to save the course to the database, please try again later'
       );
     }
 
-    // Return primitive result (ID)
-    return courseId.value;
+    if (!savedId || !savedId.value) {
+      throw new Error('Assigning a unique ID to the course failed!');
+    }
+
+    // Return primitive result (ID assigned by the DB)
+    return savedId.value;
   }
 }

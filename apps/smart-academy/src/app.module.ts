@@ -6,8 +6,8 @@ import { DrizzleModule } from './drizzle/drizzle.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    CourseModule,
     DrizzleModule.forRootAsync(),
+    CourseModule,
   ],
   controllers: [],
   providers: [],

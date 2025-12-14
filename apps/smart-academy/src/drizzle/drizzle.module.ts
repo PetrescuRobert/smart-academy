@@ -25,7 +25,10 @@ export class DrizzleModule {
 
             const connectionsPool = new Pool({ connectionString });
 
-            return drizzle(connectionsPool, { schema }) as PostgresDatabase;
+            return drizzle(connectionsPool, {
+              schema,
+              logger: true,
+            }) as PostgresDatabase;
           },
           inject: [ConfigService],
         },

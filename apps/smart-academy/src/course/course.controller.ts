@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import {
+  Course,
   CreateCourseCommand,
   CreateCourseService,
   GetCourseService,
@@ -13,13 +14,15 @@ export class CourseController {
   ) {}
 
   @Get(':id')
-  async getCourseById(@Param('id') id: string) {
+  async getCourseById(@Param('id') id: string): Promise<Course> {
     const course = await this.getCourseService.execute(id);
     return course;
   }
 
   @Post()
-  async createCourse(@Body() createCourseCommand: CreateCourseCommand) {
+  async createCourse(
+    @Body() createCourseCommand: CreateCourseCommand
+  ): Promise<string> {
     return this.createCourseService.execute(createCourseCommand);
   }
 }

@@ -18,15 +18,11 @@ export class Course extends BaseEntity<CourseId> {
     this._isActive = isActive;
   }
 
-  public static create(
-    id: CourseId,
-    title: string,
-    description: string
-  ): Course {
+  public static createNew(title: string, description: string): Course {
     // can add validation for course creation like constraints for name
     Course.validateCreationParams(title, description);
 
-    return new Course(id, title, description, false);
+    return new Course(new CourseId(null), title, description, false);
   }
 
   /**

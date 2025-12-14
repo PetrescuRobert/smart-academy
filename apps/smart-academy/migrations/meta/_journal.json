@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1765630486748,
-      "tag": "0000_even_earthquake",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1765635510007,
-      "tag": "0001_tricky_bedlam",
+      "when": 1765708999344,
+      "tag": "0000_opposite_mockingbird",
       "breakpoints": true
     }
   ]

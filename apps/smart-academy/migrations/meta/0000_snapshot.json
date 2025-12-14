@@ -1,5 +1,5 @@
 {
-  "id": "61688d2e-611b-4b45-8a7b-7b6c6e71e19b",
+  "id": "60f1071d-c585-49d7-abf4-5669c2c7e212",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -15,8 +15,8 @@
           "notNull": true,
           "default": "uuidv7()"
         },
-        "name": {
-          "name": "name",
+        "title": {
+          "name": "title",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
