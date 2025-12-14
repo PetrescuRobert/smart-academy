@@ -46,6 +46,30 @@ export class Course extends BaseEntity<CourseId> {
     this._isActive = false;
   }
 
+  public updateTitle(newTitle: string) {
+    this.validateTitle(newTitle);
+    this._title = newTitle;
+  }
+
+  public updateDescription(newDescription: string) {
+    this.validateDescription(newDescription);
+    this._description = newDescription;
+  }
+
+  private validateDescription(description: string) {
+    if (!description || description.trim().length < 10) {
+      throw new Error(
+        'Course description must be at least 10 characters long.'
+      );
+    }
+  }
+
+  private validateTitle(title: string) {
+    if (!title || title.trim().length === 0) {
+      throw new Error('Course title cannot be empty.');
+    }
+  }
+
   private static validateCreationParams(
     title: string,
     description: string

@@ -2,13 +2,9 @@ import { Course } from '../../../domain/entities';
 import { CourseId } from '../../../domain/value-objects/course-id.vo';
 import { CreateCourseCommand } from '../../dto/create-course.command';
 import { CourseRepository } from '../../ports/course.repository';
-import { UuidGenerator } from '../../ports/uuid-generator.interface';
 
 export class CreateCourseService {
-  constructor(
-    private readonly courseRepository: CourseRepository,
-    private readonly idGenerator: UuidGenerator
-  ) {}
+  constructor(private readonly courseRepository: CourseRepository) {}
 
   async execute(command: CreateCourseCommand): Promise<string> {
     // Delegate to Domain (Create the Entity)
