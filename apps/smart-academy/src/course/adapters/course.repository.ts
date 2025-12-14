@@ -1,9 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CourseRepository } from '@smart-academy/core';
 import { Course } from '@smart-academy/core';
 import { CourseId } from '@smart-academy/core';
 import { DRIZZLE, PostgresDatabase } from '../../drizzle/types';
-import { coursesTable } from '../../drizzle/schema';
+import { CourseModel, coursesTable } from '../../drizzle/schema';
 import { eq } from 'drizzle-orm';
 
 @Injectable()
@@ -12,14 +12,23 @@ export class PostgresCourseRepository implements CourseRepository {
 
   constructor(@Inject(DRIZZLE) private readonly db: PostgresDatabase) {}
 
-  async getCourseById(courseId: string): Promise<Course> {
+  async findCourseById(courseId: string): Promise<Course> {
     this.logger.log(`Fetching the course with ID: ${courseId}`);
-    const queryResult = await this.db.query.coursesTable.findFirst({
-      with: {
-        id: courseId,
-      },
-    });
-    return Course.reconstruct(queryResult);
+    let queryResult: CourseModel[] = null;
+    try {
+      queryResult = await this.db
+        .select()
+        .from(coursesTable)
+        .where(eq(coursesTable.id, courseId));
+    } catch (e) {
+      this.logger.error(e);
+    }
+
+    if (!queryResult || queryResult.length === 0) {
+      throw new NotFoundException(`Can't find course with id: ${courseId}`);
+    }
+
+    return Course.reconstruct(queryResult[0]);
   }
 
   async save(course: Course): Promise<CourseId> {

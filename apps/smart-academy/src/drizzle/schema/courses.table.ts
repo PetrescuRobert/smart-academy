@@ -9,3 +9,5 @@ export const coursesTable = pgTable('courses', {
   description: varchar(),
   active: boolean().default(false),
 });
+
+export type CourseModel = typeof coursesTable.$inferSelect;
