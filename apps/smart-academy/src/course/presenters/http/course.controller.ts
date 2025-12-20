@@ -1,7 +1,14 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Inject,
+  Post,
+} from '@nestjs/common';
 import { CourseService } from '../../application/course.service';
 import { CreateCourseDto } from './dtos/create-course.dto';
 import { CourseDto } from './dtos/course.dto';
+import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
 
 @Controller('courses')
 export class CourseController {
@@ -14,6 +21,13 @@ export class CourseController {
   // }
 
   @Post()
+  @ApiCreatedResponse({
+    description: 'The course has been successfully created',
+    type: CourseDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'The request failed at least one validation',
+  })
   async createCourse(
     @Body() createCourseDto: CreateCourseDto
   ): Promise<CourseDto> {

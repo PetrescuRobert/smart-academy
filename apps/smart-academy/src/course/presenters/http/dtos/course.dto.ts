@@ -1,9 +1,14 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Course } from '../../../domain/entities/course.entity';
 
 export class CourseDto {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   title: string;
+  @ApiProperty()
   description: string;
+  @ApiProperty()
   isActive: boolean;
 
   private constructor(

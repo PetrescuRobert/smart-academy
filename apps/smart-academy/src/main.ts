@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(
@@ -17,6 +18,18 @@ async function bootstrap() {
    * Apply custom interceptors
    */
   app.useGlobalInterceptors(new ResponseInterceptor());
+
+  /**
+   * Swagger setup
+   */
+  const config = new DocumentBuilder()
+    .setTitle('Smart Academy Api documentation')
+    .setDescription('The smart academy api doc')
+    .setVersion('1.0')
+    .addTag('smart-academy')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);

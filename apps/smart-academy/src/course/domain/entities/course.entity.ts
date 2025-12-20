@@ -1,3 +1,4 @@
+import { DomainException } from '../exceptions/domain.exception';
 import { CourseId } from '../value-objects/course-id.vo';
 
 export class Course {
@@ -60,17 +61,17 @@ export class Course {
 
   private validateTitle(title: string) {
     if (!title || title.trim().length === 0) {
-      throw new Error('Course title cannot be empty.');
+      throw new DomainException('Course title cannot be empty.');
     }
   }
 
   private validateCreationParams(title: string, description: string): void {
     if (!title || title.trim().length === 0) {
-      throw new Error('Course title cannot be empty.');
+      throw new DomainException('Course title cannot be empty.');
     }
     // You could add description validation here too.
     if (!description || description.trim().length < 10) {
-      throw new Error(
+      throw new DomainException(
         'Course description must be at least 10 characters long.'
       );
     }
