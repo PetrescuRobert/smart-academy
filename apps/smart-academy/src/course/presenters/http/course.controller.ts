@@ -1,6 +1,7 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { CourseService } from '../../application/course.service';
-import { CreateCourseDto } from './dto/create-course.dto';
+import { CreateCourseDto } from './dtos/create-course.dto';
+import { CourseDto } from './dtos/course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -15,13 +16,13 @@ export class CourseController {
   @Post()
   async createCourse(
     @Body() createCourseDto: CreateCourseDto
-  ): Promise<string> {
+  ): Promise<CourseDto> {
     const course = await this.courseService.create({
       title: createCourseDto.title,
       description: createCourseDto.description,
       active: createCourseDto.active,
     });
-    return course.id.value;
+    return CourseDto.fromEntity(course);
   }
 
   // @Patch(':id')
