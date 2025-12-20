@@ -1,15 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Inject,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { CourseService } from '../../application/course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { CreateCourseCommand } from '../../application/commands/create-course-command';
 
 @Controller('courses')
 export class CourseController {
