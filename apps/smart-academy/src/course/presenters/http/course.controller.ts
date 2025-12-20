@@ -1,14 +1,8 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Inject,
-  Post,
-} from '@nestjs/common';
-import { CourseService } from '../../application/course.service';
-import { CreateCourseDto } from './dtos/create-course.dto';
-import { CourseDto } from './dtos/course.dto';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
+import { CourseService } from '../../application/course.service';
+import { CourseDto } from './dtos/course.dto';
+import { CreateCourseDto } from './dtos/create-course.dto';
 
 @Controller('courses')
 export class CourseController {

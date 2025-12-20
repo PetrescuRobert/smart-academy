@@ -3,6 +3,8 @@ import { CourseRepository } from './ports/course.repository';
 import { CourseFactory } from '../domain/factories/course.factory';
 import { CreateCourseCommand } from './commands/create-course-command';
 import { Course } from '../domain/entities/course.entity';
+import { DomainException } from '../domain/exceptions/domain.exception';
+import { BadRequestException } from '@nestjs/common';
 
 describe('CourseService', () => {
   let service: CourseService;
@@ -60,10 +62,10 @@ describe('CourseService', () => {
     };
 
     (factory.create as jest.Mock).mockImplementation(() => {
-      throw new Error('Course title cannot be empty.');
+      throw new DomainException('Course title cannot be empty.');
     });
 
-    expect(() => service.create(cmd)).toThrow('Course title cannot be empty.');
+    expect(() => service.create(cmd)).toThrow(BadRequestException);
     expect(repository.save).not.toHaveBeenCalled();
   });
 
