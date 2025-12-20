@@ -1,7 +1,0 @@
-POST http://localhost:3000/api/courses HTTP/1.1
-content-type: application/json
-
-{
-    "name": "Course title 2",
-    "description": "Description"
-}

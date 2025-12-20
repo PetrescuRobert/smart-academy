@@ -1,6 +1,0 @@
-PATCH http://localhost:3000/api/courses/019b1d49-a384-7c0a-b5e9-b158a4ad5109 HTTP/1.1
-content-type: application/json
-
-{
-    "title": "New course title"
-}

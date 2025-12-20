@@ -1,15 +1,25 @@
-import { Module } from '@nestjs/common';
-import { CourseModule } from './course/course.module';
+import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DrizzleModule } from './drizzle/drizzle.module';
+import { BootstrapModule } from './bootstrap/bootstrap.module';
+import { ApplicationBootstrapOptions } from './common/application-bootstrap-options';
+import { CourseModule } from './course/application/course.module';
+import { CourseInfrastructureModule } from './course/infrastructure/course-infrastrucure.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    DrizzleModule.forRootAsync(),
-    CourseModule,
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), BootstrapModule],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  static register(options: ApplicationBootstrapOptions): DynamicModule {
+    return {
+      module: AppModule,
+      imports: [
+        BootstrapModule.forRoot(options),
+        CourseModule.withInfrastructure(
+          CourseInfrastructureModule.use(options.driver)
+        ),
+      ],
+    };
+  }
+}
