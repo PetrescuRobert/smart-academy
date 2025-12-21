@@ -5,6 +5,38 @@ import { CourseController } from './course.controller';
 import { CourseDto } from './dtos/course.dto';
 import { CreateCourseDto } from './dtos/create-course.dto';
 
+const getValidInputAndResultData = () => {
+  const body: CreateCourseDto = {
+    title: 'My first controller test',
+    description: 'My description for the first test',
+    active: false,
+  };
+
+  const savedCourse: Course = new Course(
+    new CourseId('uuid'),
+    'My first controller test',
+    'My description for the first test',
+    false
+  );
+
+  const responseDto: CourseDto = {
+    id: 'uuid',
+    title: 'My first controller test',
+    description: 'My description for the first test',
+    isActive: false,
+  };
+  return { body, savedCourse, responseDto };
+};
+
+const getInvalidTitleRequest = () => {
+  const body: CreateCourseDto = {
+    title: '',
+    description: 'Valid description should be above 10 chars',
+    active: false,
+  };
+  return { body };
+};
+
 describe('Courses controller - tests suite', () => {
   let coursesController: CourseController;
   let coursesService: CourseService;
@@ -18,28 +50,9 @@ describe('Courses controller - tests suite', () => {
 
   it('recieves the create course request and call the service with the correct parameter', async () => {
     // ARRANGE
-    const body: CreateCourseDto = {
-      title: 'My first controller test',
-      description: 'My description for the first test',
-      active: false,
-    };
-
-    const savedCourse: Course = new Course(
-      new CourseId('uuid'),
-      'My first controller test',
-      'My description for the first test',
-      false
-    );
-
-    const responseDto: CourseDto = {
-      id: 'uuid',
-      title: 'My first controller test',
-      description: 'My description for the first test',
-      isActive: false,
-    };
+    const { body, savedCourse, responseDto } = getValidInputAndResultData();
 
     jest.spyOn(coursesService, 'create').mockResolvedValue(savedCourse);
-
     jest.spyOn(CourseDto, 'fromEntity').mockReturnValue(responseDto);
 
     // ACT

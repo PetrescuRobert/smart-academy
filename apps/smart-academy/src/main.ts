@@ -3,7 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -11,13 +11,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(
-    AppModule.register({ driver: 'in-memory' })
+    AppModule.register({ driver: 'drizzle' })
   );
 
   /**
    * Apply custom interceptors
    */
   app.useGlobalInterceptors(new ResponseInterceptor());
+
+  /**
+   * Apply global pipes
+   */
+  app.useGlobalPipes(new ValidationPipe());
 
   /**
    * Swagger setup

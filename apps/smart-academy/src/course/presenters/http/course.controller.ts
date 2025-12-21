@@ -25,6 +25,7 @@ export class CourseController {
   async createCourse(
     @Body() createCourseDto: CreateCourseDto
   ): Promise<CourseDto> {
+    console.log(createCourseDto);
     const course = await this.courseService.create({
       title: createCourseDto.title,
       description: createCourseDto.description,

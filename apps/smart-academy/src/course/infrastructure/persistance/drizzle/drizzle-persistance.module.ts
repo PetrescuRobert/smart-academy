@@ -6,6 +6,8 @@ import * as schema from './schema';
 import { DRIZZLE, PostgresDatabase } from './types';
 import { CourseRepository } from '../../../application/ports/course.repository';
 import { PostgresCourseRepository } from './repositories/course.repository';
+import { CourseModule } from '../../../application/course.module';
+import { CourseFactory } from '../../../domain/factories/course.factory';
 
 @Global()
 @Module({})
@@ -38,6 +40,7 @@ export class DrizzlePersistanceModule {
           provide: CourseRepository,
           useClass: PostgresCourseRepository,
         },
+        CourseFactory,
       ],
       exports: [CourseRepository],
     };
