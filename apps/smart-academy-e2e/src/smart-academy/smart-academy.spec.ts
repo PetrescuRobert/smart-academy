@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 describe('POST /api/courses', () => {
   it('should return the newly created course, given a valid input', async () => {
@@ -24,8 +24,8 @@ describe('POST /api/courses', () => {
     try {
       await axios.post('/api/courses', invalidCreateCoursePayload);
       fail('Request should have failed with 400');
-    } catch (error: any) {
-      if (error.response) {
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
         res = error.response;
       } else {
         throw error;

@@ -2,12 +2,11 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+import { CourseRepository } from '../../../application/ports/course.repository';
+import { CourseFactory } from '../../../domain/factories/course.factory';
+import { PostgresCourseRepository } from './repositories/course.repository';
 import * as schema from './schema';
 import { DRIZZLE, PostgresDatabase } from './types';
-import { CourseRepository } from '../../../application/ports/course.repository';
-import { PostgresCourseRepository } from './repositories/course.repository';
-import { CourseModule } from '../../../application/course.module';
-import { CourseFactory } from '../../../domain/factories/course.factory';
 
 @Global()
 @Module({})
