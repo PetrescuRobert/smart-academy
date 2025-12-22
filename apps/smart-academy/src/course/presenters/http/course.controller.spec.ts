@@ -28,14 +28,14 @@ const getValidInputAndResultData = () => {
   return { body, savedCourse, responseDto };
 };
 
-const getInvalidTitleRequest = () => {
-  const body: CreateCourseDto = {
-    title: '',
-    description: 'Valid description should be above 10 chars',
-    active: false,
-  };
-  return { body };
-};
+// const getInvalidTitleRequest = () => {
+//   const body: CreateCourseDto = {
+//     title: '',
+//     description: 'Valid description should be above 10 chars',
+//     active: false,
+//   };
+//   return { body };
+// };
 
 describe('Courses controller - tests suite', () => {
   let coursesController: CourseController;

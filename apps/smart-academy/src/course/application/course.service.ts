@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CourseRepository } from './ports/course.repository';
 import { CourseFactory } from '../domain/factories/course.factory';
 import { CreateCourseCommand } from './commands/create-course-command';
@@ -27,5 +31,13 @@ export class CourseService {
     }
 
     return this.courseRepository.save(course);
+  }
+
+  async findById(courseId: string): Promise<Course> {
+    const course = await this.courseRepository.findById(courseId);
+    if (!course) {
+      throw new NotFoundException(`Course with ID: ${courseId} not found!`);
+    }
+    return course;
   }
 }

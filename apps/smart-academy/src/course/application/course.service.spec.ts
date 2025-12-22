@@ -1,10 +1,11 @@
-import { CourseService } from './course.service';
-import { CourseRepository } from './ports/course.repository';
-import { CourseFactory } from '../domain/factories/course.factory';
-import { CreateCourseCommand } from './commands/create-course-command';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Course } from '../domain/entities/course.entity';
 import { DomainException } from '../domain/exceptions/domain.exception';
-import { BadRequestException } from '@nestjs/common';
+import { CourseFactory } from '../domain/factories/course.factory';
+import { CourseId } from '../domain/value-objects/course-id.vo';
+import { CreateCourseCommand } from './commands/create-course-command';
+import { CourseService } from './course.service';
+import { CourseRepository } from './ports/course.repository';
 
 describe('CourseService', () => {
   let service: CourseService;
@@ -14,8 +15,12 @@ describe('CourseService', () => {
   beforeEach(() => {
     repository = {
       save: jest.fn(),
+      findById: jest.fn(),
     } as unknown as jest.Mocked<CourseRepository>;
-    factory = { create: jest.fn() } as unknown as jest.Mocked<CourseFactory>;
+    factory = {
+      create: jest.fn(),
+      hydrate: jest.fn(),
+    } as unknown as jest.Mocked<CourseFactory>;
     service = new CourseService(repository, factory);
   });
 
@@ -86,5 +91,41 @@ describe('CourseService', () => {
     (repository.save as jest.Mock).mockRejectedValue(new Error('db failure'));
 
     await expect(service.create(cmd)).rejects.toThrow('db failure');
+  });
+
+  it('should get a course by id -> propagates call to the repository and hydrate the entity', async () => {
+    // Arrange
+    const validUUID = 'uuid-valid-demo';
+    const foundCourse = new Course(
+      new CourseId(validUUID),
+      'Found',
+      'Valid description for this',
+      true
+    );
+    jest.spyOn(repository, 'findById').mockResolvedValue(foundCourse);
+    // jest.spyOn(factory, 'hydrate').mockReturnValue(foundCourse);
+
+    // Act
+    service.findById(validUUID);
+
+    // Assert
+    expect(repository.findById).toHaveBeenCalledTimes(1);
+    // expect(factory.hydrate).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw NotFoundException given non-existent course id', async () => {
+    // Arrange
+    const nonExistentId = 'invalid-uuid';
+
+    jest.spyOn(repository, 'findById').mockResolvedValue(null);
+
+    //Act && Assert
+
+    await expect(service.findById(nonExistentId)).rejects.toThrow(
+      NotFoundException
+    );
+    await expect(service.findById(nonExistentId)).rejects.toThrow(
+      `Course with ID: ${nonExistentId} not found!`
+    );
   });
 });

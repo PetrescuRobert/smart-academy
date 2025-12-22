@@ -1,15 +1,47 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CourseRepository } from '../../../../application/ports/course.repository';
 import { Course } from '../../../../domain/entities/course.entity';
 import { CourseFactory } from '../../../../domain/factories/course.factory';
-import { coursesTable } from '../schema';
+import { CourseModel, coursesTable } from '../schema';
 import { DRIZZLE, PostgresDatabase } from '../types';
+import { eq } from 'drizzle-orm';
+import { PersistanceException } from '../../exceptions/persistance.exception';
 
 export class PostgresCourseRepository implements CourseRepository {
+  private readonly logger = new Logger(PostgresCourseRepository.name);
+
   constructor(
     @Inject(DRIZZLE) private readonly db: PostgresDatabase,
     private readonly factory: CourseFactory
   ) {}
+
+  async findById(courseId: string): Promise<Course> {
+    let queryResult: CourseModel[];
+    try {
+      queryResult = await this.db
+        .select()
+        .from(coursesTable)
+        .where(eq(coursesTable.id, courseId));
+    } catch (e) {
+      this.logger.error(e);
+      throw new PersistanceException(
+        `Unable to fetch the course with ID: ${courseId} from the database`
+      );
+    }
+
+    if (queryResult.length > 1) {
+      this.logger.error(`Found multiple courses with the same ID: ${courseId}`);
+      throw new PersistanceException(
+        `Found multiple courses with the same ID: ${courseId}`
+      );
+    }
+
+    if (queryResult.length == 0) {
+      return null;
+    }
+
+    return this.factory.hydrate(queryResult[0]);
+  }
 
   async findAll(): Promise<Course[]> {
     const courses = await this.db.select().from(coursesTable);
