@@ -75,27 +75,14 @@ describe('Courses controller - tests suite', () => {
 
   it('should return CourseDto given a valid Course id', async () => {
     //Arrange
-    const validCourseId = 'valid-UUID';
-    const serviceFoundCourse = new Course(
-      new CourseId(validCourseId),
-      'Valid title',
-      'Valid long description',
-      false
-    );
-    const controllerExpectedReturn: CourseDto = {
-      id: 'valid-UUID',
-      title: 'Valid title',
-      description: 'Valid long description',
-      isActive: false,
-    };
+    const validUuid = 'valid-uuid';
+    const { savedCourse, responseDto } = getValidInputAndResultData();
 
-    jest
-      .spyOn(coursesService, 'findById')
-      .mockResolvedValue(serviceFoundCourse);
+    jest.spyOn(coursesService, 'findById').mockResolvedValue(savedCourse);
     // Act
-    const result = await coursesController.getCourseById(validCourseId);
+    const result = await coursesController.getCourseById(validUuid);
 
     //Assert
-    expect(result).toEqual(controllerExpectedReturn);
+    expect(result).toEqual<CourseDto>(responseDto);
   });
 });

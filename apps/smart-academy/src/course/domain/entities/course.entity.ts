@@ -20,19 +20,6 @@ export class Course {
     this._isActive = isActive;
   }
 
-  /**
-   * Used to recreate the entity after db retrieval
-   */
-  public static reconstruct(result: {
-    id: string;
-    title: string;
-    description: string;
-    active: boolean;
-  }) {
-    const { id, title, description, active } = result;
-    return new Course(new CourseId(id), title, description, active);
-  }
-
   activate(): void {
     this._isActive = true;
   }
