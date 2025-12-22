@@ -3,6 +3,9 @@ import { Course } from '../../../../domain/entities/course.entity';
 import { InMemoryCourseModel } from '../schema/courses.table';
 
 export class InMemoryCourseRepository implements CourseRepository {
+  findById(courseId: string): Promise<Course> {
+    throw new Error('Method not implemented.');
+  }
   private readonly courses = new Map<string, InMemoryCourseModel>();
 
   async findAll(): Promise<Course[]> {

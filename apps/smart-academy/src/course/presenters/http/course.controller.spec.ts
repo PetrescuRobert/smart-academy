@@ -44,6 +44,7 @@ describe('Courses controller - tests suite', () => {
   beforeEach(async () => {
     coursesService = {
       create: jest.fn(),
+      findById: jest.fn(),
     } as unknown as jest.Mocked<CourseService>;
     coursesController = new CourseController(coursesService);
   });
@@ -70,5 +71,31 @@ describe('Courses controller - tests suite', () => {
     expect(CourseDto.fromEntity).toHaveBeenCalledWith(savedCourse);
 
     expect(result).toEqual<CourseDto>(responseDto);
+  });
+
+  it('should return CourseDto given a valid Course id', async () => {
+    //Arrange
+    const validCourseId = 'valid-UUID';
+    const serviceFoundCourse = new Course(
+      new CourseId(validCourseId),
+      'Valid title',
+      'Valid long description',
+      false
+    );
+    const controllerExpectedReturn: CourseDto = {
+      id: 'valid-UUID',
+      title: 'Valid title',
+      description: 'Valid long description',
+      isActive: false,
+    };
+
+    jest
+      .spyOn(coursesService, 'findById')
+      .mockResolvedValue(serviceFoundCourse);
+    // Act
+    const result = await coursesController.getCourseById(validCourseId);
+
+    //Assert
+    expect(result).toEqual(controllerExpectedReturn);
   });
 });

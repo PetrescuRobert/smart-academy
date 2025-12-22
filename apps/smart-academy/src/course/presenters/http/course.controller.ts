@@ -1,18 +1,46 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { CourseService } from '../../application/course.service';
 import { CourseDto } from './dtos/course.dto';
 import { CreateCourseDto } from './dtos/create-course.dto';
+import { IsUUID } from 'class-validator';
 
 @Controller('courses')
 export class CourseController {
   constructor(@Inject() private readonly courseService: CourseService) {}
 
-  // @Get(':id')
-  // async getCourseById(@Param('id') id: string): Promise<Course> {
-  //   const course = await this.getCourseService.execute(id);
-  //   return course;
-  // }
+  @Get(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'The course id is a UUID v7',
+  })
+  @ApiOkResponse({
+    description: 'Get a course by id',
+    type: CourseDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'If a course with the provided ID does not exists!',
+  })
+  async getCourseById(
+    @Param('id', ParseUUIDPipe) id: string
+  ): Promise<CourseDto> {
+    const course = await this.courseService.findById(id);
+    return CourseDto.fromEntity(course);
+  }
 
   @Post()
   @ApiCreatedResponse({
@@ -25,7 +53,6 @@ export class CourseController {
   async createCourse(
     @Body() createCourseDto: CreateCourseDto
   ): Promise<CourseDto> {
-    console.log(createCourseDto);
     const course = await this.courseService.create({
       title: createCourseDto.title,
       description: createCourseDto.description,
