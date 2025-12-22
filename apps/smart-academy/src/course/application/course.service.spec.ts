@@ -37,12 +37,12 @@ describe('CourseService', () => {
       cmd.description,
       cmd.active
     );
-    const savedCourse = Course.reconstruct({
-      id: 'uuid-123',
-      title: cmd.title,
-      description: cmd.description,
-      active: cmd.active,
-    });
+    const savedCourse = new Course(
+      new CourseId('uuid-123'),
+      cmd.title,
+      cmd.description,
+      cmd.active
+    );
 
     (factory.create as jest.Mock).mockReturnValue(createdCourse);
     (repository.save as jest.Mock).mockResolvedValue(savedCourse);

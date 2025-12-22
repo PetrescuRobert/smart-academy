@@ -17,7 +17,6 @@ import {
 import { CourseService } from '../../application/course.service';
 import { CourseDto } from './dtos/course.dto';
 import { CreateCourseDto } from './dtos/create-course.dto';
-import { IsUUID } from 'class-validator';
 
 @Controller('courses')
 export class CourseController {
