@@ -97,6 +97,7 @@ describe('Courses controller - tests suite', () => {
       'Old description here',
       false
     );
+    const expectedResult = CourseDto.fromEntity(updatedCourse);
     jest.spyOn(coursesService, 'update').mockResolvedValue(updatedCourse);
 
     const result = await coursesController.updateCourse(
@@ -108,6 +109,6 @@ describe('Courses controller - tests suite', () => {
       ...updateCourseDto,
       id: validUuid,
     });
-    expect(result).toBeInstanceOf(CourseDto);
+    expect(result).toEqual(expectedResult);
   });
 });
