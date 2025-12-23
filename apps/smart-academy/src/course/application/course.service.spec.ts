@@ -128,4 +128,73 @@ describe('CourseService', () => {
       `Course with ID: ${nonExistentId} not found!`
     );
   });
+
+  it('should full update the course, given a valid input', async () => {
+    // Arrange
+    const updateCourseCommand = {
+      id: 'valid-uuid',
+      title: 'The new title of the course',
+      description: 'New and improved description',
+      active: true,
+    };
+
+    const existingCourse: Course = new Course(
+      new CourseId('valid-uuid'),
+      'Old title that needs to be changed',
+      'Old description that will be changed',
+      false
+    );
+
+    const updatedCourse = new Course(
+      new CourseId('valid-uuid'),
+      'The new title of the course',
+      'New and improved description',
+      true
+    );
+
+    jest.spyOn(repository, 'findById').mockResolvedValue(existingCourse);
+    jest.spyOn(repository, 'save').mockResolvedValue(updatedCourse);
+
+    // Act
+    const res = await service.update(updateCourseCommand);
+
+    //Assert
+    expect(repository.findById).toHaveBeenCalled();
+    expect(repository.save).toHaveBeenCalled();
+    expect(res).toEqual(updatedCourse);
+  });
+
+  it('should update only the title field, given only id and title', async () => {
+    //Arrange
+    const updateCourseCommand = {
+      id: 'valid-uuid',
+      title: 'Updated title',
+    };
+    const existingCourse: Course = new Course(
+      new CourseId('valid-uuid'),
+      'Old title that needs to be changed',
+      'Old description that will be changed',
+      false
+    );
+
+    const updatedCourse = new Course(
+      new CourseId('valid-uuid'),
+      'Updated title',
+      'Old description that will be changed',
+      false
+    );
+
+    jest.spyOn(repository, 'findById').mockResolvedValue(existingCourse);
+    jest.spyOn(repository, 'save').mockResolvedValue(updatedCourse);
+    jest.spyOn(existingCourse, 'updateTitle');
+
+    //ACT
+    const res = await service.update(updateCourseCommand);
+
+    //Assert
+    expect(repository.findById).toHaveBeenCalledWith(updateCourseCommand.id);
+    expect(repository.save).toHaveBeenCalledWith(existingCourse);
+    expect(existingCourse.updateTitle).toHaveBeenCalled();
+    expect(res).toEqual(updatedCourse);
+  });
 });
