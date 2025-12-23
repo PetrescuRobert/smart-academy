@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Course } from '../domain/entities/course.entity';
-import { DomainException } from '../domain/exceptions/domain.exception';
+import { DomainException } from '../../common/exceptions/domain.exception';
 import { CourseFactory } from '../domain/factories/course.factory';
 import { CourseId } from '../domain/value-objects/course-id.vo';
 import { CreateCourseCommand } from './commands/create-course-command';

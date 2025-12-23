@@ -1,4 +1,4 @@
-import { DomainException } from '../exceptions/domain.exception';
+import { DomainException } from '../../../common/exceptions/domain.exception';
 import { CourseId } from '../value-objects/course-id.vo';
 
 export class Course {
