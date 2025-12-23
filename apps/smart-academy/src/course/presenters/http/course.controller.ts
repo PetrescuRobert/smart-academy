@@ -5,6 +5,7 @@ import {
   Inject,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import {
@@ -17,6 +18,7 @@ import {
 import { CourseService } from '../../application/course.service';
 import { CourseDto } from './dtos/course.dto';
 import { CreateCourseDto } from './dtos/create-course.dto';
+import { UpdateCourseDto } from './dtos/update-course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -60,11 +62,26 @@ export class CourseController {
     return CourseDto.fromEntity(course);
   }
 
-  // @Patch(':id')
-  // async updateCourse(
-  //   @Param('id') id: string,
-  //   @Body() updateCourseCommand: UpdateCourseCommand
-  // ) {
-  //   return this.updateCourseService.execute({ ...updateCourseCommand, id });
-  // }
+  @Patch(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'The course id is a UUID v7',
+  })
+  @ApiOkResponse({
+    description: 'This will return back the updated course!',
+    type: CourseDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'If a course with the provided ID does not exists!',
+  })
+  async updateCourse(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCourseDto: UpdateCourseDto
+  ) {
+    const updatedCourse = await this.courseService.update({
+      ...updateCourseDto,
+      id,
+    });
+    return CourseDto.fromEntity(updatedCourse);
+  }
 }

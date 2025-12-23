@@ -4,6 +4,7 @@ import { CourseId } from '../../domain/value-objects/course-id.vo';
 import { CourseController } from './course.controller';
 import { CourseDto } from './dtos/course.dto';
 import { CreateCourseDto } from './dtos/create-course.dto';
+import { UpdateCourseDto } from './dtos/update-course.dto';
 
 const getValidInputAndResultData = () => {
   const body: CreateCourseDto = {
@@ -45,6 +46,7 @@ describe('Courses controller - tests suite', () => {
     coursesService = {
       create: jest.fn(),
       findById: jest.fn(),
+      update: jest.fn(),
     } as unknown as jest.Mocked<CourseService>;
     coursesController = new CourseController(coursesService);
   });
@@ -84,5 +86,28 @@ describe('Courses controller - tests suite', () => {
 
     //Assert
     expect(result).toEqual<CourseDto>(responseDto);
+  });
+
+  it('should call the update service, given valid uuid and updateCourseDto', async () => {
+    const validUuid = 'valid-uuid';
+    const updateCourseDto: UpdateCourseDto = { title: 'New title' };
+    const updatedCourse = new Course(
+      new CourseId(validUuid),
+      updateCourseDto.title,
+      'Old description here',
+      false
+    );
+    jest.spyOn(coursesService, 'update').mockResolvedValue(updatedCourse);
+
+    const result = await coursesController.updateCourse(
+      validUuid,
+      updateCourseDto
+    );
+
+    expect(coursesService.update).toHaveBeenCalledWith({
+      ...updateCourseDto,
+      id: validUuid,
+    });
+    expect(result).toBeInstanceOf(CourseDto);
   });
 });
