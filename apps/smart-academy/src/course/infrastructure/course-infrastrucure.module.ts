@@ -1,19 +1,30 @@
 import { Module } from '@nestjs/common';
-import { DrizzlePersistanceModule } from './persistance/drizzle/drizzle-persistance.module';
-import { InMemoryPersistanceModule } from './persistance/in-memory/in-memory-persistance.module';
+import { DrizzleModule } from '../../common/drizzle/drizzle.module';
+import { CourseRepository } from '../application/ports/course.repository';
+import { PostgresCourseRepository } from './persistance/drizzle/repositories/course.repository';
+import { CourseFactory } from '../domain/factories/course.factory';
 
-@Module({})
+@Module({
+  imports: [],
+  providers: [
+    { provide: CourseRepository, useClass: PostgresCourseRepository },
+    { provide: CourseFactory, useFactory: () => new CourseFactory() },
+  ],
+  exports: [CourseRepository],
+})
 export class CourseInfrastructureModule {
-  static use(driver: 'drizzle' | 'in-memory') {
-    const persistanceModule =
-      driver === 'drizzle'
-        ? DrizzlePersistanceModule
-        : InMemoryPersistanceModule;
-
-    return {
-      module: CourseInfrastructureModule,
-      imports: [persistanceModule],
-      exports: [persistanceModule],
-    };
-  }
+  // static use(driver: 'drizzle' | 'in-memory'): DynamicModule {
+  //   const persistanceModule =
+  //     driver === 'drizzle'
+  //       ? DrizzleModule.forRoot({ name: DATA_SOURCE, schema: schema })
+  //       : InMemoryPersistanceModule;
+  //   return {
+  //     module: CourseInfrastructureModule,
+  //     imports: [],
+  //     providers: [
+  //       { provide: CourseRepository, useClass: PostgresCourseRepository },
+  //     ],
+  //     exports: [],
+  //   };
+  // }
 }

@@ -1,17 +1,19 @@
 import { Inject, Logger } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
+import { DATA_SOURCE } from '../../../../../common/database/constants';
+import { Schema } from '../../../../../common/database/schema';
+import { DataSource } from '../../../../../common/drizzle/drizzle.interfaces';
 import { CourseRepository } from '../../../../application/ports/course.repository';
 import { Course } from '../../../../domain/entities/course.entity';
 import { CourseFactory } from '../../../../domain/factories/course.factory';
-import { CourseModel, coursesTable } from '../schema';
-import { DRIZZLE, PostgresDatabase } from '../types';
-import { eq } from 'drizzle-orm';
 import { PersistanceException } from '../../exceptions/persistance.exception';
+import { CourseModel, coursesTable } from '../schema';
 
 export class PostgresCourseRepository implements CourseRepository {
   private readonly logger = new Logger(PostgresCourseRepository.name);
 
   constructor(
-    @Inject(DRIZZLE) private readonly db: PostgresDatabase,
+    @Inject(DATA_SOURCE) private readonly db: DataSource<Schema>,
     private readonly factory: CourseFactory
   ) {}
 
