@@ -6,7 +6,7 @@ import { DataSource } from '../../../../../common/drizzle/drizzle.interfaces';
 import { CourseRepository } from '../../../../application/ports/course.repository';
 import { Course } from '../../../../domain/entities/course.entity';
 import { CourseFactory } from '../../../../domain/factories/course.factory';
-import { PersistanceException } from '../../exceptions/persistance.exception';
+import { PersistanceException } from '../../../../../common/exceptions/persistance.exception';
 import { CourseModel, coursesTable } from '../schema';
 
 export class PostgresCourseRepository implements CourseRepository {

@@ -10,7 +10,7 @@ import { CourseFactory } from '../domain/factories/course.factory';
     { provide: CourseRepository, useClass: PostgresCourseRepository },
     { provide: CourseFactory, useFactory: () => new CourseFactory() },
   ],
-  exports: [CourseRepository],
+  exports: [CourseFactory, CourseRepository],
 })
 export class CourseInfrastructureModule {
   // static use(driver: 'drizzle' | 'in-memory'): DynamicModule {

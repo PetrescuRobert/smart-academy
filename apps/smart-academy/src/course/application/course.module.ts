@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { CourseFactory } from '../domain/factories/course.factory';
 import { CourseInfrastructureModule } from '../infrastructure/course-infrastrucure.module';
 import { CourseController } from '../presenters/http/course.controller';
 import { CourseService } from './course.service';
 @Module({
   imports: [CourseInfrastructureModule],
   controllers: [CourseController],
-  providers: [CourseService, CourseFactory],
-  exports: [CourseFactory],
+  providers: [CourseService],
+  exports: [],
 })
 export class CourseModule {
   // static withInfrastructure(
