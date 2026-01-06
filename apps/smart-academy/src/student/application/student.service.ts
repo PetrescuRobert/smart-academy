@@ -4,15 +4,11 @@ import {
   Logger,
   ServiceUnavailableException,
 } from '@nestjs/common';
+import { DomainException } from '../../common/exceptions/domain.exception';
+import { PersistanceException } from '../../common/exceptions/persistance.exception';
 import { StudentFactory } from '../infrastructure/student.factory';
 import { CreateStudentCommand } from './commands/create-student.command';
 import { StudentRepository } from './ports/student.repository';
-import {
-  isDomainException,
-  isPersistanceException,
-} from '../../common/exceptions/utils';
-import { DomainException } from '../../common/exceptions/domain.exception';
-import { PersistanceException } from '../../common/exceptions/persistance.exception';
 
 @Injectable()
 export class StudentService {
