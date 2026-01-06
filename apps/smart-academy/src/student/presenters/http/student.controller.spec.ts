@@ -15,4 +15,6 @@ describe('StudentController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  // SHOULD CHECK VERY CAREFULLY THE UPSERT OF A STUDENT GIVEN A NEW UUID BY THE USER, POTENTIAL VULNERABILITY
 });

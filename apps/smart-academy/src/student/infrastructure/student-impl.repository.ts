@@ -43,7 +43,37 @@ export class StudentRepositoryImpl implements StudentRepository {
     return this.factory.hydrate(queryResult[0]);
   }
 
-  save(student: Student): Promise<Student> {
-    throw new Error('Method not implemented.');
+  async save(student: Student): Promise<Student> {
+    let queryResult: StudentModel[] = null;
+    try {
+      queryResult = await this.db
+        .insert(studentsTable)
+        .values({
+          id: student.getId.value,
+          firstName: student.getFirstName,
+          lastName: student.getLastName,
+          email: student.getEmail.value,
+          profilePicture: student.getProfilePicture,
+        })
+        .onConflictDoUpdate({
+          target: studentsTable.id,
+          set: {
+            firstName: student.getFirstName,
+            lastName: student.getLastName,
+            email: student.getEmail.value,
+            profilePicture: student.getProfilePicture,
+          },
+        })
+        .returning();
+    } catch (e) {
+      this.logger.error('Failed to save a student in the db', e);
+      throw new PersistanceException('Failed while saving to the database!');
+    }
+
+    if (queryResult.length === 0) {
+      return null;
+    }
+
+    return this.factory.hydrate(queryResult[0]);
   }
 }
