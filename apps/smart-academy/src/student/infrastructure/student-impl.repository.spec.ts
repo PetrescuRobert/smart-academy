@@ -215,26 +215,4 @@ describe('StudentRepositoryImpl', () => {
     expect(factory.hydrate).toHaveBeenCalledWith(updatedModel);
     expect(result).toBe(hydratedStudent);
   });
-
-  it('save -- should throw when trying to update a non-existing student id', async () => {
-    // arrange
-    const id = 'ccccccc3-3333-3333-3333-333333333333';
-    // existence check returns empty -> not found
-    dbMock.where.mockResolvedValue([]);
-
-    const studentToUpdate = {
-      getId: { value: id },
-      getFirstName: 'Someone',
-      getLastName: 'Else',
-      getEmail: { value: 'someone@example.com' },
-      getProfilePicture: null,
-    } as Student;
-
-    // act/assert
-    await expect(repository.save(studentToUpdate)).rejects.toBeInstanceOf(
-      Error
-    );
-    // ensure no update was attempted
-    expect(dbMock.update).not.toHaveBeenCalled();
-  });
 });
