@@ -27,7 +27,10 @@ export class StudentRepositoryImpl implements StudentRepository {
         .from(studentsTable)
         .where(eq(studentsTable.id, studentId.value));
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error(
+        'Failed to query the database while trying to fetch a student by id',
+        e
+      );
       throw new PersistanceException(
         `Failed while fetching the student with id: ${studentId.value}`
       );
