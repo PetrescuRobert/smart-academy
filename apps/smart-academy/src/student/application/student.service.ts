@@ -9,6 +9,8 @@ import { PersistanceException } from '../../common/exceptions/persistance.except
 import { StudentFactory } from '../infrastructure/student.factory';
 import { CreateStudentCommand } from './commands/create-student.command';
 import { StudentRepository } from './ports/student.repository';
+import { StudentId } from '../domain/value-objects/student-id.vo';
+import { Student } from '../domain/student.entity';
 
 @Injectable()
 export class StudentService {
@@ -44,5 +46,21 @@ export class StudentService {
         throw new BadRequestException(e.message);
       }
     }
+  }
+
+  async findById(studentId: string) {
+    if (!studentId) {
+      throw new BadRequestException();
+    }
+
+    let student: Student = null;
+    try {
+      student = await this.repository.findById(new StudentId(studentId));
+    } catch (e) {
+      if (e instanceof PersistanceException) {
+        throw new ServiceUnavailableException();
+      }
+    }
+    return student;
   }
 }

@@ -129,4 +129,51 @@ describe('StudentService', () => {
       BadRequestException
     );
   });
+
+  it('findById -- should return a student given a valid id of an existing student', async () => {
+    // arrange
+    const validId = 'uuid-jnajsdn-asda';
+    const foundStudent = new Student(
+      new StudentId(validId),
+      'Ion',
+      'Popescu',
+      new Email('ion.popescu@email.com'),
+      null
+    );
+
+    jest.spyOn(repositoryMock, 'findById').mockResolvedValue(foundStudent);
+    // act
+    const student = await service.findById(validId);
+    // assert
+
+    expect(repositoryMock.findById).toHaveBeenCalled();
+    expect(student).toBe(foundStudent);
+  });
+
+  it('findById -- should return null given a valid id but non existing student', async () => {
+    // arrange
+    const validId = 'uuid-jnajsdn-asda';
+
+    jest.spyOn(repositoryMock, 'findById').mockResolvedValue(null);
+
+    // act
+    const student = await service.findById(validId);
+
+    // assert
+    expect(repositoryMock.findById).toHaveBeenCalled();
+    expect(student).toBeNull();
+  });
+
+  it('findById -- should throw exception given a null id', async () => {
+    // arrange
+    const nullId = null;
+
+    jest.spyOn(repositoryMock, 'findById');
+
+    // act & assert
+    await expect(service.findById(nullId)).rejects.toBeInstanceOf(
+      BadRequestException
+    );
+    expect(repositoryMock.findById).not.toHaveBeenCalled();
+  });
 });
