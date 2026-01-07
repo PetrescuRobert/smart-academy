@@ -20,9 +20,19 @@ export class StudentService {
   ) {}
 
   async createStudent(createStudentCommand: CreateStudentCommand) {
+    this.logger.log(
+      `Creating student - ${
+        createStudentCommand.firstName + ' ' + createStudentCommand.lastName
+      } - with email ${createStudentCommand.email}`
+    );
     try {
       const newStudent = this.factory.create(createStudentCommand);
       const savedStudent = await this.repository.save(newStudent);
+      this.logger.log(
+        `Student ${
+          createStudentCommand.firstName + ' ' + createStudentCommand.lastName
+        } created successfully`
+      );
       return savedStudent;
     } catch (e) {
       this.logger.error(e.message);
