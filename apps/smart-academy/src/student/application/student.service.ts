@@ -11,6 +11,7 @@ import { CreateStudentCommand } from './commands/create-student.command';
 import { StudentRepository } from './ports/student.repository';
 import { StudentId } from '../domain/value-objects/student-id.vo';
 import { Student } from '../domain/student.entity';
+import { FindStudentsQuery } from './commands/find-students.query';
 
 @Injectable()
 export class StudentService {
@@ -62,5 +63,19 @@ export class StudentService {
       }
     }
     return student;
+  }
+
+  async findAll(findStudentsQuery?: FindStudentsQuery) {
+    let students: Student[] = null;
+
+    try {
+      students = await this.repository.findAll(findStudentsQuery);
+    } catch (e) {
+      if (e instanceof PersistanceException) {
+        throw new ServiceUnavailableException();
+      }
+    }
+
+    return students;
   }
 }

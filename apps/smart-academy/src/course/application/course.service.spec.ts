@@ -103,14 +103,12 @@ describe('CourseService', () => {
       true
     );
     jest.spyOn(repository, 'findById').mockResolvedValue(foundCourse);
-    // jest.spyOn(factory, 'hydrate').mockReturnValue(foundCourse);
 
     // Act
     service.findById(validUUID);
 
     // Assert
     expect(repository.findById).toHaveBeenCalledTimes(1);
-    // expect(factory.hydrate).toHaveBeenCalledTimes(1);
   });
 
   it('should throw NotFoundException given non-existent course id', async () => {
