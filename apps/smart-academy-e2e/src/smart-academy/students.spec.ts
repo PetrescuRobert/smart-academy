@@ -95,7 +95,7 @@ describe('POST /api/students', () => {
       // arrange
       const createStudentDto = {
         firstName: 'Ion',
-        lastNmae: 'Popescu',
+        lastName: 'Popescu',
         email: 'popescu.ion@gmail.com',
         profilePicture: null,
       };
