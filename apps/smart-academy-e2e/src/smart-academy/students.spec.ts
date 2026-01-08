@@ -1,4 +1,5 @@
-import axios, { isAxiosError } from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
+import { randomUUID } from 'crypto';
 import { Pool } from 'pg';
 
 describe('POST /api/students', () => {
@@ -10,6 +11,108 @@ describe('POST /api/students', () => {
 
   afterAll(async () => {
     await pool.end();
+  });
+
+  describe('Get student by ID', () => {
+    it('should return the user given a valid student id', async () => {
+      // arrange
+      const existingStudent = await pool.query(
+        'INSERT INTO students ("firstName", "lastName", "email", "profilePicture") VALUES ($1, $2, $3, $4) RETURNING *',
+        ['John', 'Doe', 'john@example.com', '']
+      );
+
+      // act
+      const res = await axios.get(
+        `/api/students/${existingStudent.rows[0].id}`
+      );
+
+      // assert
+      expect(res.status).toBe(200);
+      expect(res.data.data).toEqual(
+        expect.objectContaining({
+          id: existingStudent.rows[0].id,
+          firstName: existingStudent.rows[0].firstName,
+          lastName: existingStudent.rows[0].lastName,
+          profilePicture: existingStudent.rows[0].profilePicture,
+        })
+      );
+    });
+
+    it('should return 404 - not found if there is no user with the given id - valid uuid', async () => {
+      const validUuid = randomUUID();
+
+      let res: AxiosError;
+      try {
+        await axios.get(`/api/students/${validUuid}`);
+        fail('Request should have failed with status 404');
+      } catch (e) {
+        if (isAxiosError(e)) {
+          res = e;
+        } else {
+          throw e;
+        }
+      }
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 400 - bad request given an invalid uuid as a student id', async () => {
+      const invalidUuid = 'invalid-uuid';
+
+      let res: AxiosError;
+      try {
+        await axios.get(`/api/students/${invalidUuid}`);
+        fail('Request should have failed with status 400');
+      } catch (e) {
+        if (isAxiosError(e)) {
+          res = e;
+        } else {
+          throw e;
+        }
+      }
+
+      expect(res.status).toBe(400);
+    });
+  });
+
+  describe('Create student', () => {
+    it('should return the newly created student when given a valid input', async () => {
+      // arrange
+      const createStudentDto = {
+        firstName: 'Ion',
+        lastName: 'Popescu',
+        email: 'popescu.ion@gmail.com',
+        profilePicture: null,
+      };
+      //act
+      const res = await axios.post('/api/students', createStudentDto);
+      const createdStudent = res.data.data;
+      //assert
+      expect(res.status).toBe(201);
+      expect(createdStudent).toHaveProperty('id');
+      expect(createdStudent.firstName).toBe(createStudentDto.firstName);
+    });
+
+    it('should return - 400 bad request given invalid object as input', async () => {
+      const invalidCreateStudentBody = {
+        name: 'Ion Popescu',
+        age: 16,
+      };
+
+      let res: AxiosError;
+      try {
+        await axios.post('/api/student', invalidCreateStudentBody);
+        fail('Request should have failed with 400');
+      } catch (e) {
+        if (isAxiosError(e)) {
+          res = e;
+        } else {
+          throw e;
+        }
+      }
+
+      expect(res.status).toBe(400);
+    });
   });
 
   describe('Search: ', () => {
@@ -87,25 +190,6 @@ describe('POST /api/students', () => {
 
       expect(res.status).toBe(200);
       expect(res.data.data.length).toBeGreaterThanOrEqual(2);
-    });
-  });
-
-  describe('Create student', () => {
-    it('should return the newly created student when given a valid input', async () => {
-      // arrange
-      const createStudentDto = {
-        firstName: 'Ion',
-        lastName: 'Popescu',
-        email: 'popescu.ion@gmail.com',
-        profilePicture: null,
-      };
-      //act
-      const res = await axios.post('/api/students', createStudentDto);
-      const createdStudent = res.data.data;
-      //assert
-      expect(res.status).toBe(201);
-      expect(createdStudent).toHaveProperty('id');
-      expect(createdStudent.firstName).toBe(createStudentDto.firstName);
     });
   });
 });

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   Logger,
+  NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { DomainException } from '../../common/exceptions/domain.exception';
@@ -62,6 +63,11 @@ export class StudentService {
         throw new ServiceUnavailableException();
       }
     }
+
+    if (!student) {
+      throw new NotFoundException("Doesn't exists!");
+    }
+
     return student;
   }
 

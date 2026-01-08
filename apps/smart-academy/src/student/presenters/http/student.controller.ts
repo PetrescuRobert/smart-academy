@@ -7,13 +7,11 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
-  Req,
 } from '@nestjs/common';
 import { StudentService } from '../../application/student.service';
+import { CreateStudentDto } from './dtos/create-student.dto';
 import { SearchStudentsQuery } from './dtos/search-students-query.dto';
 import { StudentDto } from './dtos/student.dto';
-import { CreateStudentDto } from './dtos/create-student.dto';
-import type { Request } from 'express';
 
 @Controller('students')
 export class StudentController {
@@ -28,10 +26,7 @@ export class StudentController {
   }
 
   @Post()
-  async createNewStudent(
-    @Req() req: Request,
-    @Body() createStudentDto: CreateStudentDto
-  ) {
+  async createNewStudent(@Body() createStudentDto: CreateStudentDto) {
     this.logger.debug(createStudentDto);
     const newStudent = await this.service.createStudent(createStudentDto);
     return StudentDto.fromEntity(newStudent);
