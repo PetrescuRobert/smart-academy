@@ -13,6 +13,7 @@ import { StudentRepository } from './ports/student.repository';
 import { StudentId } from '../domain/value-objects/student-id.vo';
 import { Student } from '../domain/student.entity';
 import { FindStudentsQuery } from './commands/find-students.query';
+import { UpdateStudentCommand } from './commands/update-student.command';
 
 @Injectable()
 export class StudentService {
@@ -83,5 +84,9 @@ export class StudentService {
     }
 
     return students;
+  }
+
+  async update(updateStudentCommand: UpdateStudentCommand) {
+    throw new Error();
   }
 }
