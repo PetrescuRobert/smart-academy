@@ -1,5 +1,5 @@
 import axios, { AxiosError, isAxiosError } from 'axios';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 
 describe('POST /api/students', () => {

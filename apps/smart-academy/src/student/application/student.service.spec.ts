@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BadRequestException,
+  NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
@@ -150,18 +151,14 @@ describe('StudentService', () => {
     expect(student).toBe(foundStudent);
   });
 
-  it('findById -- should return null given a valid id but non existing student', async () => {
+  it('findById -- should throw not found given a valid id but non existing student', async () => {
     // arrange
     const validId = 'uuid-jnajsdn-asda';
 
     jest.spyOn(repositoryMock, 'findById').mockResolvedValue(null);
 
-    // act
-    const student = await service.findById(validId);
-
-    // assert
-    expect(repositoryMock.findById).toHaveBeenCalled();
-    expect(student).toBeNull();
+    // act && assert
+    await expect(service.findById(validId)).rejects.toThrow(NotFoundException);
   });
 
   it('findById -- should throw exception given a null id', async () => {

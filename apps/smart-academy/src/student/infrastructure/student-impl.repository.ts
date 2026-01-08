@@ -72,28 +72,17 @@ export class StudentRepositoryImpl implements StudentRepository {
   async save(student: Student): Promise<Student> {
     let queryResult: StudentModel[] = null;
     try {
-      // if (student.getId.value === null) {
-      //   queryResult = await this.db
-      //     .insert(studentsTable)
-      //     .values({
-      //       firstName: student.getFirstName,
-      //       lastName: student.getLastName,
-      //       email: student.getEmail.value,
-      //       profilePicture: student.getProfilePicture,
-      //     })
-      //     .returning();
-      //   return this.factory.hydrate(queryResult[0]);
-      // }
+      const valueToInsert = {
+        id: student.getId ? student.getId.value : sql`default`,
+        firstName: student.getFirstName,
+        lastName: student.getLastName,
+        email: student.getEmail.value,
+        profilePicture: student.getProfilePicture,
+      };
 
       queryResult = await this.db
         .insert(studentsTable)
-        .values({
-          id: sql`default`,
-          firstName: student.getFirstName,
-          lastName: student.getLastName,
-          email: student.getEmail.value,
-          profilePicture: student.getProfilePicture,
-        })
+        .values(valueToInsert)
         .onConflictDoUpdate({
           target: studentsTable.id,
           set: {
