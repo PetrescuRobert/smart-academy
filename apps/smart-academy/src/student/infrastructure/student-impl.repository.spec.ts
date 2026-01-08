@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { StudentRepositoryImpl } from './student-impl.repository';
 import { StudentFactory } from './student.factory';
 import { DATA_SOURCE } from '../../common/database/constants';
-import { StudentModel } from './students.table';
 import { StudentId } from '../domain/value-objects/student-id.vo';
 import { PersistanceException } from '../../common/exceptions/persistance.exception';
 import { Student } from '../domain/student.entity';
+import { StudentModel } from '../../common/database/schema/students.table';
 
 describe('StudentRepositoryImpl', () => {
   let repository: StudentRepositoryImpl;
