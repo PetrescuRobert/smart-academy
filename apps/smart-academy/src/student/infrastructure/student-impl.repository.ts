@@ -10,7 +10,10 @@ import { StudentRepository } from '../application/ports/student.repository';
 import { Student } from '../domain/student.entity';
 import { StudentId } from '../domain/value-objects/student-id.vo';
 import { StudentFactory } from './student.factory';
-import { StudentModel, studentsTable } from './students.table';
+import {
+  StudentModel,
+  studentsTable,
+} from '../../common/database/schema/students.table';
 
 @Injectable()
 export class StudentRepositoryImpl implements StudentRepository {

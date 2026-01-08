@@ -8,11 +8,11 @@ export function translateFilters(
   filters: Filter<any>[]
 ): SQL[] {
   return filters.map((filter) =>
-    this.operatorToSqlFunc({
+    operatorToSqlFunc({
       table,
-      operator: filter.operator,
-      value: filter.value,
-      field: filter.field,
+      operator: (filter as any).operator as string,
+      value: (filter as any).value,
+      field: String((filter as any).field),
     })
   );
 }
@@ -24,23 +24,23 @@ export function operatorToSqlFunc({
   value,
 }: {
   table: PgTable;
-  operator: 'eq' | 'like' | 'in';
+  operator: string;
   field: string;
   value: unknown;
 }): SQL {
   switch (operator) {
     case 'eq':
-      return eq.bind(null, this.fieldToSqlColumn(field, table), value);
+      return eq(fieldToSqlColumn(field, table), value);
     // case 'lte':
-    //   return lte(this.fieldToSqlColumn(field, studentsTable), value);
+    //   return lte(fieldToSqlColumn(field, studentsTable), value);
     default:
       throw new PersistanceException('Unknown operator!');
   }
 }
 
 export function fieldToSqlColumn(field: string, table: PgTable): PgColumn {
-  if (!table._.columns[field]) {
+  if (!table[field]) {
     throw new PersistanceException('Invalid column name!');
   }
-  return table._.columns[field];
+  return table[field];
 }

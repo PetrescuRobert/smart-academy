@@ -22,7 +22,13 @@ async function bootstrap() {
   /**
    * Apply global pipes
    */
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    })
+  );
 
   /**
    * Swagger setup

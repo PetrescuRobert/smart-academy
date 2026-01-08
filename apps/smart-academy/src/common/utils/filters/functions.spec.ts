@@ -107,7 +107,7 @@ describe('SQL Filters helpers', () => {
     });
 
     it('returns an empty array when no filters are provided', () => {
-      const thisCtx: { operatorToSqlFunc: (p: any) => any } = {
+      const thisCtx: { operatorToSqlFunc: (p) => unknown } = {
         operatorToSqlFunc: jest.fn(),
       };
       const result = translateFilters.call(thisCtx, fakeTable, []);
