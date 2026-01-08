@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { DATA_SOURCE } from '../../common/database/constants';
 import { Schema } from '../../common/database/schema';
 import { DataSource } from '../../common/drizzle/drizzle.interfaces';
@@ -72,10 +72,23 @@ export class StudentRepositoryImpl implements StudentRepository {
   async save(student: Student): Promise<Student> {
     let queryResult: StudentModel[] = null;
     try {
+      // if (student.getId.value === null) {
+      //   queryResult = await this.db
+      //     .insert(studentsTable)
+      //     .values({
+      //       firstName: student.getFirstName,
+      //       lastName: student.getLastName,
+      //       email: student.getEmail.value,
+      //       profilePicture: student.getProfilePicture,
+      //     })
+      //     .returning();
+      //   return this.factory.hydrate(queryResult[0]);
+      // }
+
       queryResult = await this.db
         .insert(studentsTable)
         .values({
-          id: student.getId.value,
+          id: sql`default`,
           firstName: student.getFirstName,
           lastName: student.getLastName,
           email: student.getEmail.value,
