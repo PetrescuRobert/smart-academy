@@ -174,38 +174,92 @@ describe('StudentService', () => {
     expect(repositoryMock.findById).not.toHaveBeenCalled();
   });
 
-  // describe('Update student', () => {
-  //   it('should return the updated user given a valid update command for an existing user', async () => {
-  //     // arrange
-  //     const updateStudentCommand = {
-  //       id: 'e71b44cf-98f8-481a-b3c8-b26e77a4a5f1',
-  //       firstName: 'Vasile',
-  //       email: 'new.ion@gmail.com',
-  //       profilePicture: '/img/vasile.png',
-  //     };
+  describe('Update student', () => {
+    it('should return the updated user given a valid update command for an existing user', async () => {
+      // arrange
+      const updateStudentCommand = {
+        id: 'e71b44cf-98f8-481a-b3c8-b26e77a4a5f1',
+        firstName: 'Vasile',
+        email: 'new.ion@gmail.com',
+        profilePicture: '/img/vasile.png',
+      };
 
-  //     const existingStudent = new Student(
-  //       new StudentId('e71b44cf-98f8-481a-b3c8-b26e77a4a5f1'),
-  //       'Ion',
-  //       'Popescu',
-  //       new Email('ion.popescu@gmail.com'),
-  //       null
-  //     );
+      const existingStudent = new Student(
+        new StudentId('e71b44cf-98f8-481a-b3c8-b26e77a4a5f1'),
+        'Ion',
+        'Popescu',
+        new Email('ion.popescu@gmail.com'),
+        null
+      );
 
-  //     const updatedStudent = new Student(
-  //       new StudentId('e71b44cf-98f8-481a-b3c8-b26e77a4a5f1'),
-  //       'Vasile',
-  //       'Popescu',
-  //       new Email('new.ion@gmail.com'),
-  //       '/img/vasile.png'
-  //     );
-  //     jest.spyOn(repositoryMock, 'save').mockResolvedValue(updatedStudent);
+      const updatedStudent = new Student(
+        new StudentId('e71b44cf-98f8-481a-b3c8-b26e77a4a5f1'),
+        'Vasile',
+        'Popescu',
+        new Email('new.ion@gmail.com'),
+        '/img/vasile.png'
+      );
+      jest.spyOn(repositoryMock, 'findById').mockResolvedValue(existingStudent);
+      jest.spyOn(repositoryMock, 'save').mockResolvedValue(updatedStudent);
 
-  //     // act
-  //     const res = service.update(updateStudentCommand);
+      // act
+      const res = await service.update(updateStudentCommand);
 
-  //     expect(repositoryMock.save).toHaveBeenCalledWith(updatedStudent);
-  //     expect(res).toEqual(updateStudentCommand);
-  //   });
-  // });
+      expect(repositoryMock.save).toHaveBeenCalled();
+      expect(res).toEqual(
+        expect.objectContaining({
+          id: new StudentId(updatedStudent.getId.value),
+          email: updatedStudent.getEmail,
+          profilePicture: updatedStudent.getProfilePicture,
+        })
+      );
+    });
+
+    it('should throw bad request exception when given the update student command for a non existing user', async () => {
+      // arrange
+      const invalidUserUpdateCommand = {
+        id: 'non-existent-student-id',
+        email: 'new-email@email.com',
+      };
+      jest.spyOn(repositoryMock, 'findById').mockResolvedValue(null);
+
+      // act
+      let res;
+      try {
+        res = await service.update(invalidUserUpdateCommand);
+        fail('Should have failed with a BadRequestException');
+      } catch (e) {
+        res = e;
+      }
+
+      // assert
+      expect(res).toBeInstanceOf(BadRequestException);
+    });
+
+    it('should throw service unavailable exception given the db throws error', async () => {
+      // arrange
+      const updateStudentCommand = {
+        id: 'e71b44cf-98f8-481a-b3c8-b26e77a4a5f1',
+        firstName: 'Vasile',
+        email: 'new.ion@gmail.com',
+        profilePicture: '/img/vasile.png',
+      };
+      jest
+        .spyOn(repositoryMock, 'findById')
+        .mockRejectedValue(new PersistanceException('Db failed'));
+
+      // act
+
+      let res;
+      try {
+        res = await service.update(updateStudentCommand);
+        fail('Should have failed with a BadRequestException');
+      } catch (e) {
+        res = e;
+      }
+
+      // assert
+      expect(res).toBeInstanceOf(ServiceUnavailableException);
+    });
+  });
 });

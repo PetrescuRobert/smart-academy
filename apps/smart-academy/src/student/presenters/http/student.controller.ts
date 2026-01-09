@@ -6,12 +6,14 @@ import {
   Logger,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { StudentService } from '../../application/student.service';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { SearchStudentsQuery } from './dtos/search-students-query.dto';
 import { StudentDto } from './dtos/student.dto';
+import { UpdateStudentDto } from './dtos/update-student.dto';
 
 @Controller('students')
 export class StudentController {
@@ -38,5 +40,21 @@ export class StudentController {
     const domainQuery = query.toDomain();
     const students = await this.service.findAll(domainQuery);
     return students.map(StudentDto.fromEntity);
+  }
+
+  @Patch(':id')
+  async updateStudentById(
+    @Param('id', ParseUUIDPipe) studentId: string,
+    @Body() updateStudentDto: UpdateStudentDto
+  ) {
+    const updatedStudent = await this.service.update({
+      id: studentId,
+      firstName: updateStudentDto.firstName,
+      lastName: updateStudentDto.lastName,
+      email: updateStudentDto.email,
+      profilePicture: updateStudentDto.profilePicture,
+    });
+
+    return StudentDto.fromEntity(updatedStudent);
   }
 }

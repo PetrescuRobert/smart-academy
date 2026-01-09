@@ -14,6 +14,7 @@ import { StudentId } from '../domain/value-objects/student-id.vo';
 import { Student } from '../domain/student.entity';
 import { FindStudentsQuery } from './commands/find-students.query';
 import { UpdateStudentCommand } from './commands/update-student.command';
+import { Email } from '../domain/value-objects/email.vo';
 
 @Injectable()
 export class StudentService {
@@ -87,6 +88,58 @@ export class StudentService {
   }
 
   async update(updateStudentCommand: UpdateStudentCommand) {
-    throw new Error();
+    // student must exists in order to update it
+    let student: Student;
+
+    this.logger.log(
+      `Starting updating the student with id: ${updateStudentCommand.id}`
+    );
+    try {
+      student = await this.repository.findById(
+        new StudentId(updateStudentCommand.id)
+      );
+    } catch (e) {
+      if (e instanceof PersistanceException) {
+        throw new ServiceUnavailableException();
+      }
+    }
+
+    if (!student) {
+      this.logger.warn(
+        `Student with id: ${updateStudentCommand.id} does not exist!`
+      );
+      throw new BadRequestException('Invalid student id');
+    }
+
+    // use entity methods to alter state
+    if (updateStudentCommand.email) {
+      student.updateEmail(new Email(updateStudentCommand.email));
+    }
+
+    if (updateStudentCommand.firstName) {
+      student.updateFirstName(updateStudentCommand.firstName);
+    }
+
+    if (updateStudentCommand.lastName) {
+      student.updateLastName(updateStudentCommand.lastName);
+    }
+
+    if (updateStudentCommand.profilePicture) {
+      student.updateProfilePicture(updateStudentCommand.profilePicture);
+    }
+
+    // save the changes
+    let updatedStudent: Student;
+    try {
+      this.logger.log(
+        `Saving the updated student with id: ${student.getId.value}`
+      );
+      updatedStudent = await this.repository.save(student);
+    } catch (e) {
+      if (e instanceof PersistanceException) {
+        throw new ServiceUnavailableException();
+      }
+    }
+    return updatedStudent;
   }
 }
