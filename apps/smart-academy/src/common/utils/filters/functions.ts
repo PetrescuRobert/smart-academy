@@ -17,9 +17,9 @@ export function translateFilters(
   return filters.map((filter) =>
     operatorToSqlFunc({
       table,
-      operator: (filter as any).operator as string,
-      value: (filter as any).value,
-      field: String((filter as any).field),
+      operator: filter.operator,
+      value: filter.value,
+      field: String(filter.field),
     })
   );
 }
