@@ -1,4 +1,4 @@
-import axios, { AxiosError, isAxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosResponse, isAxiosError } from 'axios';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 

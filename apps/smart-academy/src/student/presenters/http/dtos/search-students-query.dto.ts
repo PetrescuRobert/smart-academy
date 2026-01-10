@@ -1,16 +1,15 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  ValidateNested,
-  IsIn,
-  IsOptional,
   IsInt,
+  IsOptional,
   Min,
+  ValidateNested,
 } from 'class-validator';
-import { StudentFilterDto } from './student-filter.dto';
-import type { FindStudentsQuery } from '../../../application/commands/find-students.query';
 import type { Filter } from '../../../../common/utils/filters/types';
+import type { FindStudentsQuery } from '../../../application/commands/find-students.query';
 import { SortByDto } from './sort-by.dto';
+import { StudentFilterDto } from './student-filter.dto';
 
 type StudentFields = {
   firstName: string;
@@ -44,7 +43,7 @@ export class SearchStudentsQuery {
 
   toDomain(): FindStudentsQuery {
     return {
-      filters: this.filters as unknown as Filter<StudentFields>[],
+      filters: this.filters as Filter<StudentFields>[],
       sort: this.sort ?? { by: 'email', direction: 'asc' },
       limit: this.limit,
       offset: this.offset,
