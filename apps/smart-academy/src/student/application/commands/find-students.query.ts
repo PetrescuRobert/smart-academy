@@ -6,9 +6,14 @@ type _student_fielter_fields = {
   email: string;
 };
 
+type SortBy = {
+  by: keyof _student_fielter_fields | 'id';
+  direction: 'asc' | 'desc';
+};
+
 export type FindStudentsQuery = {
   filters: Filter<_student_fielter_fields>[];
-  sort: 'asc' | 'desc';
-  pageIndex: number;
-  pageSize: number;
+  sort: SortBy;
+  limit: number;
+  offset: number;
 };

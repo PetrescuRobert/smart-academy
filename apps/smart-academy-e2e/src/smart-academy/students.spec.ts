@@ -129,9 +129,9 @@ describe('POST /api/students', () => {
 
       const body = {
         filters: [{ field: 'firstName', operator: 'eq', value: 'John' }],
-        sort: 'asc',
-        pageIndex: 0,
-        pageSize: 10,
+        sort: { by: 'email', direction: 'asc' },
+        offset: 0,
+        limit: 10,
       };
 
       const res = await axios.post('/api/students/search', body);
@@ -151,8 +151,8 @@ describe('POST /api/students', () => {
     it('should return 400 when filter has invalid field', async () => {
       const body = {
         filters: [{ field: 'unknown', operator: 'eq', value: 'x' }],
-        pageIndex: 0,
-        pageSize: 10,
+        offset: 0,
+        limit: 10,
       };
 
       let res: AxiosResponse | undefined;
@@ -184,7 +184,7 @@ describe('POST /api/students', () => {
         ['Alice', 'Smith', 'alice@example.com', '']
       );
 
-      const body = { filters: [], pageIndex: 0, pageSize: 10 };
+      const body = { filters: [], offset: 0, limit: 10 };
 
       const res = await axios.post('/api/students/search', body);
 

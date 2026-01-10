@@ -10,6 +10,7 @@ import {
 import { StudentFilterDto } from './student-filter.dto';
 import type { FindStudentsQuery } from '../../../application/commands/find-students.query';
 import type { Filter } from '../../../../common/utils/filters/types';
+import { SortByDto } from './sort-by.dto';
 
 type StudentFields = {
   firstName: string;
@@ -21,30 +22,32 @@ export class SearchStudentsQuery {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => StudentFilterDto)
+  @IsOptional()
   filters: StudentFilterDto[] = [];
 
-  @IsIn(['asc', 'desc'])
+  @ValidateNested()
+  @Type(() => SortByDto)
   @IsOptional()
-  sort: 'asc' | 'desc' = 'asc';
-
-  @Type(() => Number)
-  @IsInt()
-  @Min(0)
-  @IsOptional()
-  pageIndex = 0;
+  sort: SortByDto;
 
   @Type(() => Number)
   @IsInt()
   @Min(1)
   @IsOptional()
-  pageSize = 10;
+  limit = 10;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  offset = 0;
 
   toDomain(): FindStudentsQuery {
     return {
       filters: this.filters as unknown as Filter<StudentFields>[],
-      sort: this.sort,
-      pageIndex: Number(this.pageIndex),
-      pageSize: Number(this.pageSize),
+      sort: this.sort ?? { by: 'email', direction: 'asc' },
+      limit: this.limit,
+      offset: this.offset,
     };
   }
 }

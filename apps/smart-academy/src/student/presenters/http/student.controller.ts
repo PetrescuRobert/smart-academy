@@ -38,8 +38,16 @@ export class StudentController {
   @HttpCode(200)
   async getAllStudents(@Body() query: SearchStudentsQuery) {
     const domainQuery = query.toDomain();
-    const students = await this.service.findAll(domainQuery);
-    return students.map(StudentDto.fromEntity);
+    const [students, studentsCount] = await this.service.findAll(domainQuery);
+    return {
+      data: students.map(StudentDto.fromEntity),
+      meta: {
+        total: studentsCount,
+        limit: domainQuery.limit,
+        offset: domainQuery.offset,
+        hasNext: domainQuery.offset + students.length < studentsCount,
+      },
+    };
   }
 
   @Patch(':id')

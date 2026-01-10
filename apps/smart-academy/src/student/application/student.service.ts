@@ -74,17 +74,13 @@ export class StudentService {
   }
 
   async findAll(findStudentsQuery?: FindStudentsQuery) {
-    let students: Student[] = null;
-
     try {
-      students = await this.repository.findAll(findStudentsQuery);
+      return await this.repository.findAll(findStudentsQuery);
     } catch (e) {
       if (e instanceof PersistanceException) {
         throw new ServiceUnavailableException();
       }
     }
-
-    return students;
   }
 
   async update(updateStudentCommand: UpdateStudentCommand) {

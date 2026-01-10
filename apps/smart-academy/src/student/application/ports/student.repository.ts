@@ -4,6 +4,6 @@ import { FindStudentsQuery } from '../commands/find-students.query';
 
 export abstract class StudentRepository {
   abstract findById(studentId: StudentId): Promise<Student | null>;
-  abstract findAll(query: FindStudentsQuery): Promise<Student[]>;
+  abstract findAll(query: FindStudentsQuery): Promise<[Student[], number]>;
   abstract save(student: Student): Promise<Student>;
 }
