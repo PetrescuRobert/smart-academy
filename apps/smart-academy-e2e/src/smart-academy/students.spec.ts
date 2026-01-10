@@ -101,7 +101,7 @@ describe('POST /api/students', () => {
 
       let res: AxiosError;
       try {
-        await axios.post('/api/student', invalidCreateStudentBody);
+        await axios.post('/api/students', invalidCreateStudentBody);
         fail('Request should have failed with 400');
       } catch (e) {
         if (isAxiosError(e)) {
@@ -190,6 +190,63 @@ describe('POST /api/students', () => {
 
       expect(res.status).toBe(200);
       expect(res.data.data.length).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  describe('Update student feature', () => {
+    it('should return the student given a valid update student request', async () => {
+      // arrange
+      const updateStudentDto = {
+        email: 'new.ion.popescu@gmail.com',
+        firstName: 'Vasile',
+      };
+
+      const existingStudent = await pool.query(
+        'INSERT INTO students ("firstName", "lastName", "email", "profilePicture") VALUES ($1, $2, $3, $4) RETURNING *',
+        ['Ion', 'Popescu', 'ion@popescu.com', '']
+      );
+
+      // act
+      const res = await axios.patch(
+        `/api/students/${existingStudent.rows[0].id}`,
+        updateStudentDto
+      );
+
+      // assert
+      expect(res.status).toBe(200);
+      expect(res.data.data).toEqual(
+        expect.objectContaining({
+          id: existingStudent.rows[0].id,
+          email: updateStudentDto.email,
+          firstName: updateStudentDto.firstName,
+          lastName: 'Popescu',
+          profilePicture: existingStudent.rows[0].profilePicture,
+        })
+      );
+    });
+
+    it('should return BadRequest 400 given a non existing student id', async () => {
+      // arrange
+      const nonExistingStudentId = 'e71b44cf-98f8-481a-b3c8-b26e77a4a5f2'; // still valid uuid
+      const updateStudentDto = {
+        firstName: 'NewName',
+      };
+
+      // act
+      let res: AxiosError;
+      try {
+        await axios.patch(
+          `/api/students/${nonExistingStudentId}`,
+          updateStudentDto
+        );
+        fail('Request should failed with status 400');
+      } catch (e) {
+        console.log(e);
+        res = e;
+      }
+
+      // assert
+      expect(res.status).toBe(400);
     });
   });
 });

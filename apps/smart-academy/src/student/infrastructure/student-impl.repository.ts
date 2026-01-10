@@ -73,7 +73,7 @@ export class StudentRepositoryImpl implements StudentRepository {
     let queryResult: StudentModel[] = null;
     try {
       const valueToInsert = {
-        id: student.getId ? student.getId.value : sql`default`,
+        id: student.getId.value ? student.getId.value : sql`default`,
         firstName: student.getFirstName,
         lastName: student.getLastName,
         email: student.getEmail.value,
