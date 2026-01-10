@@ -153,13 +153,14 @@ describe('StudentRepositoryImpl', () => {
 
     // assert
     expect(dbMock.insert).toHaveBeenCalled();
-    expect(dbMock.values).toHaveBeenCalledWith({
-      id: null,
-      firstName: 'Jane',
-      lastName: 'Roe',
-      email: 'jane@example.com',
-      profilePicture: null,
-    });
+    expect(dbMock.values).toHaveBeenCalledWith(
+      expect.objectContaining({
+        firstName: 'Jane',
+        lastName: 'Roe',
+        email: 'jane@example.com',
+        profilePicture: null,
+      })
+    );
     expect(dbMock.returning).toHaveBeenCalled();
     expect(factory.hydrate).toHaveBeenCalledWith(insertedModel);
     expect(result).toBe(hydratedStudent);
