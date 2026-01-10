@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, MinLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, MinLength } from 'class-validator';
 
 export class CreateCourseDto {
   @ApiProperty()
@@ -9,5 +9,6 @@ export class CreateCourseDto {
   @MinLength(10, { message: 'Description should be min. 10 characters long' })
   description: string;
   @ApiProperty()
+  @IsBoolean()
   active: boolean;
 }

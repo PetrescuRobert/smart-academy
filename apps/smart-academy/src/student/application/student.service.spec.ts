@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BadRequestException,
+  NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
@@ -128,5 +129,137 @@ describe('StudentService', () => {
     await expect(service.createStudent(command)).rejects.toBeInstanceOf(
       BadRequestException
     );
+  });
+
+  it('findById -- should return a student given a valid id of an existing student', async () => {
+    // arrange
+    const validId = 'uuid-jnajsdn-asda';
+    const foundStudent = new Student(
+      new StudentId(validId),
+      'Ion',
+      'Popescu',
+      new Email('ion.popescu@email.com'),
+      null
+    );
+
+    jest.spyOn(repositoryMock, 'findById').mockResolvedValue(foundStudent);
+    // act
+    const student = await service.findById(validId);
+    // assert
+
+    expect(repositoryMock.findById).toHaveBeenCalled();
+    expect(student).toBe(foundStudent);
+  });
+
+  it('findById -- should throw not found given a valid id but non existing student', async () => {
+    // arrange
+    const validId = 'uuid-jnajsdn-asda';
+
+    jest.spyOn(repositoryMock, 'findById').mockResolvedValue(null);
+
+    // act && assert
+    await expect(service.findById(validId)).rejects.toThrow(NotFoundException);
+  });
+
+  it('findById -- should throw exception given a null id', async () => {
+    // arrange
+    const nullId = null;
+
+    jest.spyOn(repositoryMock, 'findById');
+
+    // act & assert
+    await expect(service.findById(nullId)).rejects.toBeInstanceOf(
+      BadRequestException
+    );
+    expect(repositoryMock.findById).not.toHaveBeenCalled();
+  });
+
+  describe('Update student', () => {
+    it('should return the updated user given a valid update command for an existing user', async () => {
+      // arrange
+      const updateStudentCommand = {
+        id: 'e71b44cf-98f8-481a-b3c8-b26e77a4a5f1',
+        firstName: 'Vasile',
+        email: 'new.ion@gmail.com',
+        profilePicture: '/img/vasile.png',
+      };
+
+      const existingStudent = new Student(
+        new StudentId('e71b44cf-98f8-481a-b3c8-b26e77a4a5f1'),
+        'Ion',
+        'Popescu',
+        new Email('ion.popescu@gmail.com'),
+        null
+      );
+
+      const updatedStudent = new Student(
+        new StudentId('e71b44cf-98f8-481a-b3c8-b26e77a4a5f1'),
+        'Vasile',
+        'Popescu',
+        new Email('new.ion@gmail.com'),
+        '/img/vasile.png'
+      );
+      jest.spyOn(repositoryMock, 'findById').mockResolvedValue(existingStudent);
+      jest.spyOn(repositoryMock, 'save').mockResolvedValue(updatedStudent);
+
+      // act
+      const res = await service.update(updateStudentCommand);
+
+      expect(repositoryMock.save).toHaveBeenCalled();
+      expect(res).toEqual(
+        expect.objectContaining({
+          id: new StudentId(updatedStudent.getId.value),
+          email: updatedStudent.getEmail,
+          profilePicture: updatedStudent.getProfilePicture,
+        })
+      );
+    });
+
+    it('should throw bad request exception when given the update student command for a non existing user', async () => {
+      // arrange
+      const invalidUserUpdateCommand = {
+        id: 'non-existent-student-id',
+        email: 'new-email@email.com',
+      };
+      jest.spyOn(repositoryMock, 'findById').mockResolvedValue(null);
+
+      // act
+      let res;
+      try {
+        res = await service.update(invalidUserUpdateCommand);
+        fail('Should have failed with a BadRequestException');
+      } catch (e) {
+        res = e;
+      }
+
+      // assert
+      expect(res).toBeInstanceOf(BadRequestException);
+    });
+
+    it('should throw service unavailable exception given the db throws error', async () => {
+      // arrange
+      const updateStudentCommand = {
+        id: 'e71b44cf-98f8-481a-b3c8-b26e77a4a5f1',
+        firstName: 'Vasile',
+        email: 'new.ion@gmail.com',
+        profilePicture: '/img/vasile.png',
+      };
+      jest
+        .spyOn(repositoryMock, 'findById')
+        .mockRejectedValue(new PersistanceException('Db failed'));
+
+      // act
+
+      let res;
+      try {
+        res = await service.update(updateStudentCommand);
+        fail('Should have failed with a BadRequestException');
+      } catch (e) {
+        res = e;
+      }
+
+      // assert
+      expect(res).toBeInstanceOf(ServiceUnavailableException);
+    });
   });
 });

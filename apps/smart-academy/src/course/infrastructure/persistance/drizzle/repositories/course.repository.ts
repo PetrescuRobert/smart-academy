@@ -7,7 +7,10 @@ import { CourseRepository } from '../../../../application/ports/course.repositor
 import { Course } from '../../../../domain/entities/course.entity';
 import { CourseFactory } from '../../../../domain/factories/course.factory';
 import { PersistanceException } from '../../../../../common/exceptions/persistance.exception';
-import { CourseModel, coursesTable } from '../schema';
+import {
+  CourseModel,
+  coursesTable,
+} from '../../../../../common/database/schema/courses.table';
 
 export class PostgresCourseRepository implements CourseRepository {
   private readonly logger = new Logger(PostgresCourseRepository.name);

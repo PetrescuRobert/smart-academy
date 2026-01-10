@@ -9,6 +9,14 @@ import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+/**
+ * Bootstraps and starts the NestJS application with global configuration.
+ *
+ * Applies the ResponseInterceptor and a ValidationPipe configured to transform inputs,
+ * strip unknown properties, and reject requests with non-whitelisted properties.
+ * Registers Swagger UI at /api, sets the global route prefix to "api", and begins listening
+ * on the port from `process.env.PORT` or 3000.
+ */
 async function bootstrap() {
   const app = await NestFactory.create(
     AppModule.register({ driver: 'drizzle' })
@@ -22,7 +30,13 @@ async function bootstrap() {
   /**
    * Apply global pipes
    */
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    })
+  );
 
   /**
    * Swagger setup
