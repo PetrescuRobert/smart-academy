@@ -1,4 +1,4 @@
-import axios, { AxiosError, isAxiosError } from 'axios';
+import axios, { AxiosError, isAxiosError, AxiosResponse } from 'axios';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 
@@ -41,37 +41,37 @@ describe('POST /api/students', () => {
     it('should return 404 - not found if there is no user with the given id - valid uuid', async () => {
       const validUuid = randomUUID();
 
-      let res: AxiosError;
+      let res: AxiosResponse | undefined;
       try {
         await axios.get(`/api/students/${validUuid}`);
         fail('Request should have failed with status 404');
       } catch (e) {
         if (isAxiosError(e)) {
-          res = e;
+          res = e.response;
         } else {
           throw e;
         }
       }
 
-      expect(res.status).toBe(404);
+      expect(res?.status).toBe(404);
     });
 
     it('should return 400 - bad request given an invalid uuid as a student id', async () => {
       const invalidUuid = 'invalid-uuid';
 
-      let res: AxiosError;
+      let res: AxiosResponse | undefined;
       try {
         await axios.get(`/api/students/${invalidUuid}`);
         fail('Request should have failed with status 400');
       } catch (e) {
         if (isAxiosError(e)) {
-          res = e;
+          res = e.response;
         } else {
           throw e;
         }
       }
 
-      expect(res.status).toBe(400);
+      expect(res?.status).toBe(400);
     });
   });
 
@@ -99,19 +99,19 @@ describe('POST /api/students', () => {
         age: 16,
       };
 
-      let res: AxiosError;
+      let res: AxiosResponse | undefined;
       try {
         await axios.post('/api/students', invalidCreateStudentBody);
         fail('Request should have failed with 400');
       } catch (e) {
         if (isAxiosError(e)) {
-          res = e;
+          res = e.response;
         } else {
           throw e;
         }
       }
 
-      expect(res.status).toBe(400);
+      expect(res?.status).toBe(400);
     });
   });
 
@@ -155,7 +155,7 @@ describe('POST /api/students', () => {
         pageSize: 10,
       };
 
-      let res;
+      let res: AxiosResponse | undefined;
       try {
         await axios.post('/api/students/search', body);
         fail('Request should have failed with 400');
@@ -167,8 +167,8 @@ describe('POST /api/students', () => {
         }
       }
 
-      expect(res.status).toBe(400);
-      expect(res.data.message).toEqual(
+      expect(res?.status).toBe(400);
+      expect(res?.data.message).toEqual(
         expect.arrayContaining([expect.stringContaining('field')])
       );
     });
@@ -233,7 +233,7 @@ describe('POST /api/students', () => {
       };
 
       // act
-      let res: AxiosError;
+      let res: AxiosResponse | undefined;
       try {
         await axios.patch(
           `/api/students/${nonExistingStudentId}`,
@@ -241,12 +241,15 @@ describe('POST /api/students', () => {
         );
         fail('Request should failed with status 400');
       } catch (e) {
-        console.log(e);
-        res = e;
+        if (isAxiosError(e)) {
+          res = e.response;
+        } else {
+          throw e;
+        }
       }
 
       // assert
-      expect(res.status).toBe(400);
+      expect(res?.status).toBe(400);
     });
   });
 });
