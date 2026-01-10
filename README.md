@@ -31,6 +31,17 @@ To see all available targets to run for a project, run:
 npx nx show project smart-academy
 ```
 
+## Local E2E setup 🔧
+
+To run end-to-end tests locally, create a local `.env` for the E2E app from the example and set your database credentials:
+
+```sh
+cp apps/smart-academy-e2e/.env.example apps/smart-academy-e2e/.env
+# then edit apps/smart-academy-e2e/.env and update DATABASE_URL accordingly
+```
+
+**Important:** The repository previously contained a tracked `apps/smart-academy-e2e/.env` with plaintext credentials. Treat any exposed credentials as compromised and rotate them immediately (revoke and create new passwords/keys). Do not commit real credentials — commit only `apps/smart-academy-e2e/.env.example` or store secrets in a secure manager.
+
 These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
 
 [More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
