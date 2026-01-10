@@ -7,7 +7,7 @@ export const studentsTable = pgTable('students', {
     .default(sql`uuidv7()`),
   firstName: varchar().notNull(),
   lastName: varchar().notNull(),
-  email: varchar().notNull(),
+  email: varchar().notNull().unique(),
   profilePicture: varchar(),
 });
 
