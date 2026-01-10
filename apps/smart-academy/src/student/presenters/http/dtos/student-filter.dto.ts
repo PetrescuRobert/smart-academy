@@ -16,10 +16,13 @@ export class StudentFilterDto {
 
   @ValidateIf((o) => o.operator === 'in')
   @IsArray()
+  @ValidateIf((o) => o.operator === 'in')
   @ArrayNotEmpty()
+  @ValidateIf((o) => o.operator === 'in')
   @IsString({ each: true })
   @ValidateIf((o) => o.operator !== 'in')
   @IsString()
+  @ValidateIf((o) => o.operator !== 'in')
   @IsNotEmpty()
   value: string[] | string;
 }
