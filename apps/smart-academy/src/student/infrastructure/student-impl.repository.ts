@@ -28,7 +28,7 @@ export class StudentRepositoryImpl implements StudentRepository {
   ) {}
 
   async findAll(query: FindStudentsQuery): Promise<[Student[], number]> {
-    let queryResult: StudentModel[];
+    let queryResult: StudentModel[] = [];
     let totalResults: number;
 
     try {
