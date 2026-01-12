@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -55,6 +56,10 @@ export class StudentController {
     @Param('id', ParseUUIDPipe) studentId: string,
     @Body() updateStudentDto: UpdateStudentDto
   ) {
+    if (Object.keys(updateStudentDto).length === 0) {
+      throw new BadRequestException('At least one property should be defined!');
+    }
+
     const updatedStudent = await this.service.update({
       id: studentId,
       firstName: updateStudentDto.firstName,

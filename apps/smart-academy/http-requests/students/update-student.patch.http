@@ -2,5 +2,4 @@ PATCH http://localhost:3000/api/students/e71b44cf-98f8-481a-b3c8-b26e77a4a5f2 HT
 Content-Type: application/json
 
 {
-    "firstName": "NewName"
 }
