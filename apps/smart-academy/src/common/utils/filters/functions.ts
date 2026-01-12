@@ -64,7 +64,7 @@ export function operatorToSqlFunc({
  * @throws PersistanceException When `field` does not exist on `table` (message: "Invalid column name!")
  */
 export function fieldToSqlColumn(field: string, table: PgTable): PgColumn {
-  if (!table[field]) {
+  if (!(field in table)) {
     throw new PersistanceException('Invalid column name!');
   }
   return table[field];

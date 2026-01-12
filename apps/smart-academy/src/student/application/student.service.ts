@@ -108,20 +108,26 @@ export class StudentService {
     }
 
     // use entity methods to alter state
-    if (updateStudentCommand.email) {
-      student.updateEmail(new Email(updateStudentCommand.email));
-    }
+    try {
+      if (updateStudentCommand.email) {
+        student.updateEmail(new Email(updateStudentCommand.email));
+      }
 
-    if (updateStudentCommand.firstName) {
-      student.updateFirstName(updateStudentCommand.firstName);
-    }
+      if (updateStudentCommand.firstName) {
+        student.updateFirstName(updateStudentCommand.firstName);
+      }
 
-    if (updateStudentCommand.lastName) {
-      student.updateLastName(updateStudentCommand.lastName);
-    }
+      if (updateStudentCommand.lastName) {
+        student.updateLastName(updateStudentCommand.lastName);
+      }
 
-    if (updateStudentCommand.profilePicture) {
-      student.updateProfilePicture(updateStudentCommand.profilePicture);
+      if (updateStudentCommand.profilePicture) {
+        student.updateProfilePicture(updateStudentCommand.profilePicture);
+      }
+    } catch (e) {
+      if (e instanceof DomainException) {
+        throw new BadRequestException(e.message);
+      }
     }
 
     // save the changes
