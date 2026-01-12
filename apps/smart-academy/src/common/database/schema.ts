@@ -1,5 +1,5 @@
-import { coursesTable } from '../../course/infrastructure/persistance/drizzle/schema';
-import { studentsTable } from '../../student/infrastructure/students.table';
+import { studentsTable } from './schema/students.table';
+import { coursesTable } from './schema/courses.table';
 
 export const schema = {
   coursesTable,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Student } from '../domain/student.entity';
 import { StudentId } from '../domain/value-objects/student-id.vo';
-import { StudentModel } from './students.table';
+import { StudentModel } from '../../common/database/schema/students.table';
 import { Email } from '../domain/value-objects/email.vo';
 
 @Injectable()
