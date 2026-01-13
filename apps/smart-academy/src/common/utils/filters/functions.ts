@@ -1,4 +1,4 @@
-import { eq, SQL } from 'drizzle-orm';
+import { eq, inArray, like, lte, SQL } from 'drizzle-orm';
 import { PgColumn, PgTable } from 'drizzle-orm/pg-core';
 import { PersistanceException } from '../../exceptions/persistance.exception';
 import { Filter } from './types';
@@ -45,11 +45,16 @@ export function operatorToSqlFunc({
   field: string;
   value: unknown;
 }): SQL {
+  const tableColumn = fieldToSqlColumn(field, table);
   switch (operator) {
     case 'eq':
-      return eq(fieldToSqlColumn(field, table), value);
-    // case 'lte':
-    //   return lte(fieldToSqlColumn(field, studentsTable), value);
+      return eq(tableColumn, value);
+    case 'lte':
+      return lte(tableColumn, value);
+    case 'like':
+      return like(tableColumn, value as string);
+    case 'in':
+      return inArray(tableColumn, value as (typeof tableColumn.dataType)[]);
     default:
       throw new PersistanceException('Unknown operator!');
   }
