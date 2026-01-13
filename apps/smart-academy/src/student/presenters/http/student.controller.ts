@@ -16,6 +16,7 @@ import { SearchStudentsQuery } from './dtos/search-students-query.dto';
 import { StudentDto } from './dtos/student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { PaginatedResponse } from '../../../common/dtos/paginated-response.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('students')
 export class StudentController {
@@ -24,12 +25,20 @@ export class StudentController {
   constructor(private readonly service: StudentService) {}
 
   @Get(':id')
+  @ApiOkResponse({
+    description: 'Get a student by id',
+    type: StudentDto,
+  })
   async getStudentById(@Param('id', ParseUUIDPipe) studentId: string) {
     const student = await this.service.findById(studentId);
     return StudentDto.fromEntity(student);
   }
 
   @Post()
+  @ApiCreatedResponse({
+    description: 'Create a student',
+    type: StudentDto,
+  })
   async createNewStudent(@Body() createStudentDto: CreateStudentDto) {
     this.logger.debug(createStudentDto);
     const newStudent = await this.service.createStudent(createStudentDto);
@@ -38,6 +47,10 @@ export class StudentController {
 
   @Post('search')
   @HttpCode(200)
+  @ApiOkResponse({
+    description: 'Get students, can apply filters and sorting',
+    type: PaginatedResponse<StudentDto>,
+  })
   async getAllStudents(@Body() query: SearchStudentsQuery) {
     const domainQuery = query.toDomain();
     const [students, studentsCount] = await this.service.findAll(domainQuery);

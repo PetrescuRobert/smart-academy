@@ -1,10 +1,16 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Student } from '../../../domain/student.entity';
 
 export class StudentDto {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   firstName: string;
+  @ApiProperty()
   lastName: string;
+  @ApiProperty()
   email: string;
+  @ApiProperty()
   profilePicture: string;
 
   private constructor(

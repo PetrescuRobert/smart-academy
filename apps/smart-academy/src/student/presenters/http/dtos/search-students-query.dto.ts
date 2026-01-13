@@ -10,6 +10,7 @@ import type { Filter } from '../../../../common/utils/filters/types';
 import type { FindStudentsQuery } from '../../../application/commands/find-students.query';
 import { SortByDto } from './sort-by.dto';
 import { StudentFilterDto } from './student-filter.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 type StudentFields = {
   firstName: string;
@@ -18,23 +19,27 @@ type StudentFields = {
 };
 
 export class SearchStudentsQuery {
+  @ApiPropertyOptional({ isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => StudentFilterDto)
   @IsOptional()
   filters: StudentFilterDto[] = [];
 
+  @ApiPropertyOptional()
   @ValidateNested()
   @Type(() => SortByDto)
   @IsOptional()
   sort: SortByDto;
 
+  @ApiPropertyOptional({ default: 10, type: 'integer' })
   @Type(() => Number)
   @IsInt()
   @Min(1)
   @IsOptional()
   limit = 10;
 
+  @ApiPropertyOptional({ default: 0, type: 'integer' })
   @Type(() => Number)
   @IsInt()
   @Min(0)
