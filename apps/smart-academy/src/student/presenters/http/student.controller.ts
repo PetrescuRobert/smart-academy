@@ -15,6 +15,7 @@ import { CreateStudentDto } from './dtos/create-student.dto';
 import { SearchStudentsQuery } from './dtos/search-students-query.dto';
 import { StudentDto } from './dtos/student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
+import { PaginatedResponse } from '../../../common/dtos/paginated-response.dto';
 
 @Controller('students')
 export class StudentController {
@@ -40,15 +41,18 @@ export class StudentController {
   async getAllStudents(@Body() query: SearchStudentsQuery) {
     const domainQuery = query.toDomain();
     const [students, studentsCount] = await this.service.findAll(domainQuery);
-    return {
-      data: students.map(StudentDto.fromEntity),
-      meta: {
-        total: studentsCount,
-        limit: domainQuery.limit,
-        offset: domainQuery.offset,
-        hasNext: domainQuery.offset + students.length < studentsCount,
-      },
-    };
+    return PaginatedResponse.of(
+      students.map(StudentDto.fromEntity),
+      query.limit,
+      query.offset,
+      studentsCount,
+      query.sort,
+      query.filters.map((f) => ({
+        field: f.field,
+        operator: f.operator,
+        value: f.value,
+      }))
+    );
   }
 
   @Patch(':id')
