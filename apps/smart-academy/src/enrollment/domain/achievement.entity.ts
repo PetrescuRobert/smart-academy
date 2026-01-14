@@ -1,1 +1,1 @@
-export class Achievements {}
+export class Achievement {}
