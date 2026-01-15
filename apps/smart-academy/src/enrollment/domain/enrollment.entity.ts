@@ -1,7 +1,7 @@
 import { CourseId } from '../../course/domain/value-objects/course-id.vo';
 import { StudentId } from '../../student/domain/value-objects/student-id.vo';
 import { Achievement } from './achievement.entity';
-import { EnrollmentId } from './value-objects/enrollment-id.vo';
+import { EnrollmentId } from '../../common/domain/enrollment-id.vo';
 
 export class Enrollment {
   private constructor(
