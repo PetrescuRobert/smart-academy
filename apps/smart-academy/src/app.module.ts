@@ -4,6 +4,7 @@ import { BootstrapModule } from './bootstrap/bootstrap.module';
 import { ApplicationBootstrapOptions } from './common/application-bootstrap-options';
 import { CourseModule } from './course/application/course.module';
 import { StudentModule } from './student/application/student.module';
+import { EnrollmentModule } from './enrollment/application/enrollment.module';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
@@ -14,7 +15,12 @@ export class AppModule {
   static register(options: ApplicationBootstrapOptions): DynamicModule {
     return {
       module: AppModule,
-      imports: [BootstrapModule.forRoot(options), CourseModule, StudentModule],
+      imports: [
+        BootstrapModule.forRoot(options),
+        CourseModule,
+        StudentModule,
+        EnrollmentModule,
+      ],
     };
   }
 }

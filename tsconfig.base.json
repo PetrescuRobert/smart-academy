@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@smart-academy/core": ["libs/core/src/index.ts"]
+      "@smart-academy/core": ["libs/core/src/index.ts"],
+      "@smart-academy/ddd-shared-kernel": [
+        "libs/ddd-shared-kernel/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
