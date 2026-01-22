@@ -1,38 +1,46 @@
-import { AchievementId } from '../../common/domain/achievement-id.vo';
+import { Entity, Id } from '@smart-academy/ddd-shared-kernel';
 import { MilestoneId } from '../../common/domain/milestone-id.vo';
 import { DomainException } from '../../common/exceptions/domain.exception';
 import { Grade } from './value-objects/grade.vo';
 
-export class Achievement {
-  public readonly id: AchievementId;
-  public readonly milestoneId: MilestoneId;
-  private _grade: Grade;
-  private _completed = false;
+export type AchievementProps = {
+  milestoneId: MilestoneId;
+  grade: Grade;
+  completed: boolean;
+};
 
-  constructor(id: AchievementId, milestone: MilestoneId) {
-    this.id = id;
-    this.milestoneId = milestone;
+export type CreateAchivementProps = AchievementProps & {
+  id: Id;
+};
+
+export class Achievement extends Entity<AchievementProps> {
+  protected _id: Id;
+  public validate(): void {
+    throw new Error('Method not implemented.');
+  }
+
+  constructor(create: CreateAchivementProps) {
+    super({
+      id: create.id,
+      props: {
+        completed: false,
+        milestoneId: create.milestoneId,
+        grade: create.grade,
+      },
+    });
   }
 
   gradeMilestone(grade: number) {
-    this._grade = new Grade(grade);
+    this.props.grade = new Grade(grade);
   }
 
   complete() {
-    if (this._completed) {
+    if (this.props.completed) {
       throw new DomainException(
         'Invalid Achievement state for complete operation!'
       );
     }
 
-    this._completed = true;
-  }
-
-  get grade() {
-    return this._grade;
-  }
-
-  get completed() {
-    return this._completed;
+    this.props.completed = true;
   }
 }
